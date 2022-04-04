@@ -21,11 +21,11 @@
 | Init     | 작업 세팅 커밋 (패키지 설치 등)    |
 | Implement| 큰 단위 기능 구현                  |
 | Add      | 기능 추가                         |
-| Fix      | 버그 수정  (in-위치, to/for-이유)  |
-| Remove   | 삭제 (from-위치)                  |
+| Fix      | 버그 수정 (in :위치, to/for: 이유)|
+| Remove   | 삭제 (from: 위치)                |
 | Move     | 코드, 파일 이동                   |
 | Rename   | 이름 변경 (A to B 형식)           |
 | Hotfix   | 급한 버그 수정                    |
-| Refactor | 더 좋은 코드 개선                 |
+| Refactor | 코드 개선                        |
 | Chore    | 주석, 개행, 포맷팅 등 사소한 작업  |
-| Docs     | 문서 작성                         |
+| Docs     | 문서 작성                        |
