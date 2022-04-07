@@ -13,7 +13,7 @@ class ConcertHall(models.Model):
 
 
 class Floor(models.Model):
-    concert_hall = models.ForeignKey("concert_halls.ConcertHall", on_delete=models.CASCADE)
+    concert_hall = models.ForeignKey("concert_halls.ConcertHall", related_name='floors', on_delete=models.CASCADE)
     floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
 
     def __str__(self):
@@ -21,7 +21,7 @@ class Floor(models.Model):
 
 
 class Seat(models.Model):
-    floor = models.ForeignKey("concert_halls.Floor", on_delete=models.CASCADE)
+    floor = models.ForeignKey("concert_halls.Floor", related_name="seats", on_delete=models.CASCADE)
     area = models.CharField(max_length=128)
     seat_row = models.CharField(max_length=128, blank=True, null=True)
     seat_num = models.CharField(max_length=128, blank=True, null=True)
