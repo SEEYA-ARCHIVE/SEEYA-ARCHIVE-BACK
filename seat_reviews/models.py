@@ -12,6 +12,7 @@ class Post(models.Model):
     # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     concert_hall = models.ForeignKey("concert_halls.ConcertHall", on_delete=models.SET_NULL, null=True)
     images = ArrayField(models.ImageField(upload_to=get_seat_image_path))
+    artist = models.CharField(max_length=128, blank=True, null=True)
     review = models.TextField(blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
