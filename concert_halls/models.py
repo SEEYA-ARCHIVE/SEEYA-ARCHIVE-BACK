@@ -17,7 +17,7 @@ class Floor(models.Model):
     floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
 
     def __str__(self):
-        return self.floor
+        return str(self.floor)
 
 
 class Seat(models.Model):
@@ -27,4 +27,4 @@ class Seat(models.Model):
     seat_num = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        return "{}구역 {}열 ".format(self.area, self.seat_row)
+        return "{}구역 {}열 ".format(self.area, self.seat_row if self.seat_row is not None else "-")
