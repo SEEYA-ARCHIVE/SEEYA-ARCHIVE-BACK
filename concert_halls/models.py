@@ -21,7 +21,7 @@ class Floor(models.Model):
 
 
 class Seat(models.Model):
-    floor = models.ForeignKey("concert_halls.Floor", related_name="seats", on_delete=models.CASCADE)
+    seat_floor = models.ForeignKey("concert_halls.Floor", related_name="seats", on_delete=models.CASCADE)
     area = models.CharField(max_length=128)
     seat_row = models.CharField(max_length=128, blank=True, null=True)
     seat_num = models.CharField(max_length=128, blank=True, null=True)
