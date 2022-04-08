@@ -7,4 +7,3 @@ local_settings.py
 .env
 cache
 secrets.json
-concert_halls/migrations
