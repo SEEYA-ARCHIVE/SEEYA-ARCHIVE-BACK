@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'concert_halls',
     # admin image
     'sorl.thumbnail',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
