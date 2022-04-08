@@ -27,4 +27,4 @@ class Seat(models.Model):
     seat_num = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        return self.area + "구역 " + self.seat_row + "열 " + self.seat_num + "번"
+        return "{}구역 {}열 ".format(self.area, self.seat_row)
