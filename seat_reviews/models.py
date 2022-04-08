@@ -1,5 +1,4 @@
 from django.db import models
-from django.db.models import Count
 from django.contrib.postgres.fields import ArrayField
 from sorl.thumbnail import get_thumbnail
 from django.utils.html import format_html
@@ -23,7 +22,7 @@ class Post(models.Model):
     update_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.review[:50]
+        return "{}층 {}구역 리뷰".format(self.floor, self.area)
 
 
 class AdminPost(models.Model):
