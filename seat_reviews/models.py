@@ -12,7 +12,7 @@ def get_seat_image_path(self, filename):
 class Post(models.Model):
     # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     concert_hall = models.ForeignKey("concert_halls.ConcertHall", on_delete=models.SET_NULL, null=True)
-    images = ArrayField(models.ImageField(upload_to=get_seat_image_path))
+    images = ArrayField(models.CharField(upload_to=get_seat_image_path))
     artist = models.CharField(max_length=128, blank=True, null=True)
     floor = models.CharField(max_length=128)
     area = models.CharField(max_length=128)
