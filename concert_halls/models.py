@@ -17,7 +17,7 @@ class Floor(models.Model):
     floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
 
     def __str__(self):
-        return self.floor
+        return str(self.floor)
 
 
 class Seat(models.Model):
