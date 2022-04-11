@@ -21,4 +21,3 @@ admin.site.register(Review)
 #     list_display = ['concert_hall', 'image_previews', 'href_url',
 #                     'text', 'floor', 'area', 'seat_row', 'seat_num', 'date']
 #     list_editable = ['floor', 'area', 'seat_row', 'seat_num']
-#
