@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import ConcertHall, SeatArea
 
-# Register your models here.
+admin.site.register(ConcertHall)
+admin.site.register(SeatArea)
