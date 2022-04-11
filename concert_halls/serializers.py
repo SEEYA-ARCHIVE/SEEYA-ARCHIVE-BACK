@@ -1,49 +1,41 @@
 from rest_framework import serializers
-from .models import ConcertHall, Floor, Seat
-from seat_reviews import Post
+from .models import ConcertHall, SeatArea
 
 
-class ConcertHallNameListSerializer(serializers.ModelSerializer):
+class ReviewNestingSeatAreaSerializer(serializers.ModelSerializer):
+    reviews = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='images',
+    )
+
     class Meta:
-        model = ConcertHall
-        fields = ['name']
-
-
-class SeatReviewImageListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Post
-        fields = ['images']
-
-
-class ConcertHallSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ConcertHall
-        fields = ['name', 'address', 'lat', 'lng']
-
-
-class FloorSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Floor
-        fields = ['concert_hall', 'floor']
-
-
-class SeatSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Seat
-        fields = ['seat_floor', 'area', 'seat_row', 'seat_num']
+        model = SeatArea
+        fields = ['id', 'reviews']
 
 
 class ConcertHallNameReviewImageSerializer(serializers.ModelSerializer):
-    concert_hall_name = ConcertHallNameListSerializer
-    review_image = SeatReviewImageListSerializer
+    seat_areas = ReviewNestingSeatAreaSerializer(many=True, read_only=True)
 
     class Meta:
-        fields = ['concert_hall_name', 'review_image']
+        model = ConcertHall
+        fields = ['id', 'name', 'seat_areas']
+
+
+class SeatAreaSerializer(serializers.ModelSerializer):
+    count_reviews = serializers.SerializerMethodField()
+
+    def get_count_reviews(self, obj):
+        return obj.reviews.count()
+
+    class Meta:
+        model = SeatArea
+        fields = ['id', 'floor', 'area', 'count_reviews']
 
 
 class ConcertHallSeatLayoutSerializer(serializers.ModelSerializer):
-    concert_hall_name = ConcertHallNameListSerializer(many=True)
-    seat = SeatSerializer(many=True)
+    seat_areas = SeatAreaSerializer(many=True, read_only=True)
 
     class Meta:
-        fields = ['concert_hall_name', 'seat']
+        model = ConcertHall
+        fields = ['name', 'seat_areas']
