@@ -1,6 +1,5 @@
 from django.contrib import admin
-from .models import ConcertHall, Floor, Seat
+from .models import ConcertHall, SeatArea
 
 admin.site.register(ConcertHall)
-admin.site.register(Floor)
-admin.site.register(Seat)
+admin.site.register(SeatArea)

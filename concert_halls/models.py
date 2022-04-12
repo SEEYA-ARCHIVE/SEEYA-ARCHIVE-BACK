@@ -12,19 +12,12 @@ class ConcertHall(models.Model):
         return self.name
 
 
-class Floor(models.Model):
-    concert_hall = models.ForeignKey("concert_halls.ConcertHall", related_name='floors', on_delete=models.CASCADE)
-    floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(10)])
-
-    def __str__(self):
-        return str(self.floor)
-
-
-class Seat(models.Model):
-    seat_floor = models.ForeignKey("concert_halls.Floor", related_name="seats", on_delete=models.CASCADE)
+class SeatArea(models.Model):
+    concert_hall = models.ForeignKey("concert_halls.ConcertHall",
+                                     related_name="seat_areas",
+                                     on_delete=models.SET_NULL, null=True)
+    floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     area = models.CharField(max_length=128)
-    seat_row = models.CharField(max_length=128, blank=True, null=True)
-    seat_num = models.CharField(max_length=128, blank=True, null=True)
 
     def __str__(self):
-        return "{}구역 {}열 ".format(self.area, self.seat_row)
+        return "{}층 {}구역".format(self.floor, self.area)

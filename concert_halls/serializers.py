@@ -1,16 +1,41 @@
 from rest_framework import serializers
-from .models import ConcertHall, Floor, Seat
+from .models import ConcertHall, SeatArea
 
 
-class ConcertHallNameListSerializer(serializers.ModelSerializer):
+class ReviewNestingSeatAreaSerializer(serializers.ModelSerializer):
+    reviews = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='images',
+    )
+
+    class Meta:
+        model = SeatArea
+        fields = ['id', 'reviews']
+
+
+class ConcertHallNameReviewImageSerializer(serializers.ModelSerializer):
+    seat_areas = ReviewNestingSeatAreaSerializer(many=True, read_only=True)
+
     class Meta:
         model = ConcertHall
-        fields = ['name']
+        fields = ['id', 'name', 'seat_areas']
+
+
+class SeatAreaSerializer(serializers.ModelSerializer):
+    count_reviews = serializers.SerializerMethodField()
+
+    def get_count_reviews(self, obj):
+        return obj.reviews.count()
+
+    class Meta:
+        model = SeatArea
+        fields = ['id', 'floor', 'area', 'count_reviews']
 
 
 class ConcertHallSeatLayoutSerializer(serializers.ModelSerializer):
-    floor_model = serializers.SlugRelatedField(many=True, read_only=True, slug_field='')
+    seat_areas = SeatAreaSerializer(many=True, read_only=True)
 
     class Meta:
         model = ConcertHall
-        fields = []
+        fields = ['name', 'seat_areas']
