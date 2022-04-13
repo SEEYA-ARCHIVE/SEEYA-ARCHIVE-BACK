@@ -15,3 +15,5 @@ sorl-thumbnail==12.8.0
 sqlparse==0.4.2
 tzdata==2022.1
 urllib3==1.26.9
+boto3
+django_storages

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # admin image
     'sorl.thumbnail',
     'rest_framework',
+    'storages',
 ]
 
 MIDDLEWARE = [
