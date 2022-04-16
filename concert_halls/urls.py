@@ -2,9 +2,8 @@ from django.urls import include, path
 from rest_framework import routers
 from . import views
 
-router = routers.SimpleRouter()
+router = routers.SimpleRouter(trailing_slash=False)
 router.register(r'concert_halls', views.ConcertHallViewSet, basename='concert_hall')
-router.register(r'seat_areas', views.SeatAreaViewSet, basename='seat_area')
 
 seat_area_router = routers.SimpleRouter(trailing_slash=False)
 seat_area_router.register(r'seat_areas', views.SeatAreaViewSet, basename='seat_area')
