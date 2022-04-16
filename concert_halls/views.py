@@ -1,35 +1,21 @@
-from rest_framework import viewsets, mixins, generics
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
+from rest_framework.response import Response
+
 from .serializers import *
 from .models import ConcertHall, SeatArea
-from django.db.models import Prefetch
 
 
-class IndexViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = ConcertHallNameReviewImageSerializer
-    queryset = ConcertHall.objects.all().prefetch_related(
-        Prefetch("seat_areas",
-                 queryset=SeatArea.objects.prefetch_related("reviews").filter(reviews__images__len__gt=0).all())).all()
+class ConcertHallViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ConcertHallSerializer
+    queryset = ConcertHall.objects.all()
 
 
-class SeatAreaListViewSet(generics.ListAPIView,
-                        mixins.RetrieveModelMixin):
-    serializer_class = ConcertHallSeatAreaSerializer
+class SeatAreaViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SeatAreaSerializer
 
     def get_queryset(self):
         concert_hall_id = self.kwargs['concert_hall_id']
-        queryset = ConcertHall.objects.filter(id=concert_hall_id).prefetch_related(
-            Prefetch("seat_areas", queryset=SeatArea.objects.prefetch_related("reviews").all())).all()
+        queryset = SeatArea.objects.filter(concert_hall_id=concert_hall_id).all()
         return queryset
 
-
-class SeatAreaViewSet(generics.ListAPIView,
-                                mixins.RetrieveModelMixin):
-    serializer_class = ConcertHallSeatAreaSerializer
-
-    def get_queryset(self):
-        concert_hall_id = self.kwargs['concert_hall_id']
-        seat_area_id = self.kwargs['seat_area_id']
-        queryset = ConcertHall.objects.filter(id=concert_hall_id).prefetch_related(
-            Prefetch("seat_areas",
-                     queryset=SeatArea.objects.prefetch_related("reviews").filter(id=seat_area_id))).all()
-        return queryset
