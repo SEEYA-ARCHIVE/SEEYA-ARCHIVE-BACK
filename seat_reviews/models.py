@@ -4,8 +4,8 @@ from sorl.thumbnail import get_thumbnail
 from django.utils.html import format_html
 
 
-def get_review_image_path(self, filename):
-    return '{}'.format(filename)
+# def get_review_image_path(self, filename):
+#     return '{}'.format(filename)
 
 
 class Review(models.Model):
