@@ -4,8 +4,8 @@ from sorl.thumbnail import get_thumbnail
 from django.utils.html import format_html
 
 
-def get_review_image_path(self, filename):
-    return '{}'.format(filename)
+# def get_review_image_path(self, filename):
+#     return '{}'.format(filename)
 
 
 class Review(models.Model):
@@ -14,7 +14,7 @@ class Review(models.Model):
                                   related_name="reviews",
                                   on_delete=models.SET_NULL,
                                   null=True)
-    images = ArrayField(models.CharField(max_length=2048))
+    images = ArrayField(models.CharField(max_length=512))
     artist = models.CharField(max_length=128, blank=True, null=True)
     seat_row = models.CharField(max_length=128, blank=True, null=True)
     seat_num = models.CharField(max_length=128, blank=True, null=True)
