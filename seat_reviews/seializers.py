@@ -9,7 +9,8 @@ class SeatReviewsSerializer(ModelSerializer):
     images = serializers.SerializerMethodField()
 
     def get_images(self, obj):
-        return {'preview_images': obj.images[0], 'num_images': len(obj.images)}
+        return {'preview_images': os.path.join(settings.MEDIA_URL, 'review-images', obj.images[0]),
+                'num_images': len(obj.images)}
 
     class Meta:
         model = Review
