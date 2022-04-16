@@ -1,4 +1,21 @@
-from rest_framework import viewsets, mixins, generics
+from django.shortcuts import get_object_or_404
+from rest_framework import viewsets
+from rest_framework.response import Response
+
 from .serializers import *
 from .models import ConcertHall, SeatArea
-from django.db.models import Prefetch
+
+
+class ConcertHallViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ConcertHallSerializer
+    queryset = ConcertHall.objects.all()
+
+
+class SeatAreaViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = SeatAreaSerializer
+
+    def get_queryset(self):
+        concert_hall_id = self.kwargs['concert_hall_id']
+        queryset = SeatArea.objects.filter(concert_hall_id=concert_hall_id).all()
+        return queryset
+
