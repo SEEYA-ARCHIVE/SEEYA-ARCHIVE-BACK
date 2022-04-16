@@ -14,7 +14,7 @@ class Review(models.Model):
                                   related_name="reviews",
                                   on_delete=models.SET_NULL,
                                   null=True)
-    images = ArrayField(models.ImageField(upload_to=get_review_image_path))
+    images = ArrayField(models.CharField(max_length=2048))
     artist = models.CharField(max_length=128, blank=True, null=True)
     seat_row = models.CharField(max_length=128, blank=True, null=True)
     seat_num = models.CharField(max_length=128, blank=True, null=True)
