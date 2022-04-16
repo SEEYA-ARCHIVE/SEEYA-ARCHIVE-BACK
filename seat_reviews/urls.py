@@ -1,11 +1,7 @@
 from django.urls import path
-from .views import SeatReviewsUpload,ReviewList
-
-
+from .views import SeatReviewsViewSet, DetailReview
 
 urlpatterns = [
-
-    path("seat_area/<int:seat_area_id>/reviews/",SeatReviewsUpload.as_view()),
-    path("reviews/<int:id>", ReviewList.as_view())
-
+    path('seat_area/<int:seat_area_id>/reviews/', SeatReviewsViewSet.as_view()),
+    path('reviews/<int:id>', DetailReview.as_view())
 ]
