@@ -1,7 +1,6 @@
 from django.conf import settings
-from rest_framework.serializers import ModelSerializer, Serializer
+from rest_framework.serializers import ModelSerializer
 from .models import Review
-from concert_halls.models import ConcertHall
 from rest_framework import serializers
 import os
 
@@ -11,7 +10,7 @@ class SeatReviewsSerializer(ModelSerializer):
 
     def get_images(self, obj):
         return {'preview_image': os.path.join(settings.MEDIA_URL, 'review-images', obj.images[0]),
-                'num_images': len(obj.images)}
+                'countimages': len(obj.images)}
 
     class Meta:
         model = Review
