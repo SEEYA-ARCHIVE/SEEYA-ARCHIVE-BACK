@@ -10,7 +10,7 @@ DATABASES = {
         'NAME': 'seeyadb',
         'USER': 'seeyadb',
         'PASSWORD': 'seeyaarchive123!',
-        'HOST': 'db',
+        'HOST': 'postgresdb',
         'PORT': '5432',
     }
 }
