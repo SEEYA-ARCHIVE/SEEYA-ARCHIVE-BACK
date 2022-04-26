@@ -10,7 +10,7 @@ DATABASES = {
         'NAME': 'seeyadb',
         'USER': 'seeyadb',
         'PASSWORD': 'seeyaarchive123!',
-        'HOST': '127.0.0.1',
+        'HOST': '3.36.62.207',
         'PORT': '5432',
     }
 }
