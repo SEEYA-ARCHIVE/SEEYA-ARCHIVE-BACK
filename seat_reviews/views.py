@@ -1,19 +1,18 @@
-
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
-
-from .seializers import SeatReviewsSerializer, ReivewSerializer
+from .seializers import SeatReviewsSerializer, ReviewSerializer
 from .models import Review
 from rest_framework.pagination import PageNumberPagination
 
+
 class Pagination(PageNumberPagination):
     page_size = 6
+
 
 class SeatReviewsViewSet(ListAPIView):
     queryset = Review.objects.all()
     serializer_class = SeatReviewsSerializer
     pagination_class = Pagination
-
 
     def get_queryset(self):
         seat_area_id = self.kwargs['seat_area_id']
@@ -23,7 +22,7 @@ class SeatReviewsViewSet(ListAPIView):
 
 class DetailReview(RetrieveAPIView):
     queryset = Review.objects.all()
-    serializer_class = ReivewSerializer
+    serializer_class = ReviewSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'review_id'
 
