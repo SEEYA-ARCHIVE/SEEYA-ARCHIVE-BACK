@@ -10,7 +10,7 @@ class SeatReviewsSerializer(ModelSerializer):
 
     def get_images(self, obj):
         return {'preview_image': os.path.join(settings.MEDIA_URL, 'review-images', obj.images[0]),
-                'countimages': len(obj.images)}
+                'count_images': len(obj.images)}
 
     class Meta:
         model = Review
