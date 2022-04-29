@@ -20,7 +20,7 @@ class SeatReviewsSerializer(ModelSerializer):
 class ReviewSerializer(ModelSerializer):
     seat_area = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
-    concert_hall = serializers.SerializerMethodField()
+    concert_hall_name = serializers.SerializerMethodField()
 
     def get_seat_area(self, obj):
         return obj.seat_area.area
@@ -28,9 +28,9 @@ class ReviewSerializer(ModelSerializer):
     def get_images(self, obj):
         return [os.path.join(settings.MEDIA_URL, 'review-images', image) for image in obj.images]
 
-    def get_concert_hall(self, obj):
+    def get_concert_hall_name(self, obj):
         return obj.seat_area.concert_hall.name
 
     class Meta:
         model = Review
-        fields = ['id', 'concert_hall', 'create_at', 'update_at', 'seat_area', 'images', 'artist']
+        fields = ['id', 'concert_hall_name', 'create_at', 'update_at', 'seat_area', 'images', 'artist']
