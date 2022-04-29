@@ -25,11 +25,11 @@ class ReviewSerializer(ModelSerializer):
     def get_seat_area(self, obj):
         return obj.seat_area.area
 
-    def get_concert_hall(self, obj):
-        return obj.seat_area.concert_hall.name
-
     def get_images(self, obj):
         return [os.path.join(settings.MEDIA_URL, 'review-images', image) for image in obj.images]
+
+    def get_concert_hall(self, obj):
+        return obj.seat_area.concert_hall.name
 
     class Meta:
         model = Review
