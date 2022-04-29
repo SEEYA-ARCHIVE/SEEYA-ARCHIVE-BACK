@@ -17,7 +17,7 @@ class SeatReviewsSerializer(ModelSerializer):
         fields = ['id', 'create_at', 'images']
 
 
-class ReivewSerializer(ModelSerializer):
+class ReviewSerializer(ModelSerializer):
     seat_area = serializers.SerializerMethodField()
     images = serializers.SerializerMethodField()
     concert_hall = serializers.SerializerMethodField()
@@ -33,4 +33,4 @@ class ReivewSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id','concert_hall','create_at', 'update_at', 'seat_area', 'images', 'artist']
+        fields = ['id', 'concert_hall', 'create_at', 'update_at', 'seat_area', 'images', 'artist']
