@@ -26,6 +26,15 @@ class Review(models.Model):
         return "review_{}".format(self.id)
 
 
+class Comment(models.Model):
+    review = models.ForeignKey('seat_reviews.Review', related_name='comments', on_delete=models.CASCADE())
+    user = models.CharField(max_length=16) #임시
+    comment = models.CharField(max_length=1024)
+    create_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{}".format(self.id)
+
 # class AdminPost(models.Model):
 #     concert_hall = models.CharField(max_length=128, blank=True, null=True, default="올림픽홀")
 #     source_url = models.URLField()
