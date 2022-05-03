@@ -2,23 +2,25 @@ from .base import *
 
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', '3.36.62.207']
+ALLOWED_HOSTS = ['localhost'
+                , get_secret('HOST')
+                 ]
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'seeyadb',
-        'USER': 'seeyadb',
-        'PASSWORD': 'seeyaarchive123!',
-        'HOST': '3.36.62.207',
-        'PORT': '5432',
+        'NAME': get_secret('DB_NAME'),
+        'USER': get_secret('DB_USER'),
+        'PASSWORD': get_secret('DB_PASSWORD'),
+        'HOST': get_secret('DB_HOST'),
+        'PORT': get_secret('DB_PORT'),
     }
 }
 
 # S3 설정을 위한 변수
 # access key와 secret key는 본인이 생성한 iam의 정보를 사용할 것
-AWS_ACCESS_KEY_ID = 'AKIAYUXU5CD4GHIVYQXX'
-AWS_SECRET_ACCESS_KEY = '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'
+AWS_ACCESS_KEY_ID = get_secret("MY_AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = get_secret("MY_AWS_SECRET_ACCESS_KEY")
 
 AWS_REGION = 'ap-northeast-2'
 AWS_STORAGE_BUCKET_NAME = '7th-team2-seeya-archive'
