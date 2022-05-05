@@ -12,21 +12,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# secret_file = os.path.join(BASE_DIR, 'secrets.json')
-#
-# with open(secret_file) as f:
-#     secrets = json.loads(f.read())
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
 
 
-# def get_secret(setting):
-#     try:
-#         return secrets[setting]
-#     except KeyError:
-#         error_msg = "Set the {} environment variable".format(setting)
-#         raise ImproperlyConfigured(error_msg)
+def get_secret(setting):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = "Set the {} environment variable".format(setting)
+        raise ImproperlyConfigured(error_msg)
 
 
-SECRET_KEY ="django-insecure-he46)qc&rqio^)u!*5#_jp)ndw4*2u!cey^l-#1@ur-f!%m+n&"
+SECRET_KEY = get_secret("SECRET_KEY")
 
 
 
@@ -46,9 +46,11 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'rest_framework',
     'drf_yasg',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -57,6 +59,32 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CORS_ORIGIN_WHITELIST = (
+    "http://localhost:3000",
+)
+CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = (
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+)
+
+CORS_ALLOW_HEADERS = (
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+)
 
 ROOT_URLCONF = 'seeyaArchive.urls'
 
