@@ -16,8 +16,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 #
 # with open(secret_file) as f:
 #     secrets = json.loads(f.read())
-
-
+#
+#
 # def get_secret(setting):
 #     try:
 #         return secrets[setting]
@@ -26,7 +26,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 #         raise ImproperlyConfigured(error_msg)
 
 
-SECRET_KEY ="django-insecure-he46)qc&rqio^)u!*5#_jp)ndw4*2u!cey^l-#1@ur-f!%m+n&"
+def get_secret(secret_name):
+    file = open('/run/secrets/' + secret_name)
+    secret = file.read()
+    secret = secret.restrip().lstrip()
+    file.close()
+
+    return secret
+
+
+SECRET_KEY = get_secret("SECRET_KEY")
 
 
 
