@@ -29,7 +29,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 def get_secret(secret_name):
     file = open('/run/secrets/' + secret_name)
     secret = file.read()
-    secret = secret.restrip().lstrip()
+    secret = secret.rstrip().lstrip()
     file.close()
 
     return secret
