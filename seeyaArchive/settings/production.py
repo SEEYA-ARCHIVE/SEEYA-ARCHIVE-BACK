@@ -1,6 +1,20 @@
 from .base import *
 
+
+
 DEBUG = False
+
+def get_secret(secret_name):
+    file = open('/run/secrets/' + secret_name)
+    secret = file.read()
+    secret = secret.rstrip().lstrip()
+    file.close()
+
+    return secret
+
+
+SECRET_KEY = get_secret("SECRET_KEY")
+
 
 ALLOWED_HOSTS = ['localhost'
                 , get_secret('HOST')
