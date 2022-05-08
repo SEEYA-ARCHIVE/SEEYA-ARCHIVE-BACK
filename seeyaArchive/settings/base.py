@@ -12,35 +12,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# secret_file = os.path.join(BASE_DIR, 'secrets.json')
-#
-# with open(secret_file) as f:
-#     secrets = json.loads(f.read())
-#
-#
-# def get_secret(setting):
-#     try:
-#         return secrets[setting]
-#     except KeyError:
-#         error_msg = "Set the {} environment variable".format(setting)
-#         raise ImproperlyConfigured(error_msg)
 
-
-def get_secret(secret_name):
-    file = open('/run/secrets/' + secret_name)
-    secret = file.read()
-    secret = secret.rstrip().lstrip()
-    file.close()
-
-    return secret
-
-
-SECRET_KEY = get_secret("SECRET_KEY")
-
-
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
