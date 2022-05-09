@@ -62,7 +62,10 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_WHITELIST = (
     "http://localhost:3000",
+    "https://www.seeya-archive.com",
+    "https://seeya-archive.com",
 )
+
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = (
@@ -106,10 +109,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'seeyaArchive.wsgi.application'
 
-
-
-
-
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
@@ -152,12 +151,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-
