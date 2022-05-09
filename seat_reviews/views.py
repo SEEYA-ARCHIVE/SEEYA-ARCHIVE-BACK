@@ -33,15 +33,15 @@ class DetailReview(RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         queryset = self.get_queryset()
-        if instance == queryset.filter(id__gt=self.kwargs['seat_area_id']).first():
+        if queryset.filter(id__gt=self.kwargs['review_id']).first() is None:
             next_id = None
         else:
-            next_id = queryset.filter(id__gt=self.kwargs['seat_area_id']).first().id
+            next_id = queryset.filter(id__gt=self.kwargs['review_id']).first().id
 
-        if instance == queryset.filter(id__lt=self.kwargs['seat_area_id']).last():
+        if queryset.filter(id__lt=self.kwargs['review_id']).last() is None:
             previous_id = None
         else:
-            previous_id = queryset.filter(id__lt=self.kwargs['seat_area_id']).last().id
+            previous_id = queryset.filter(id__lt=self.kwargs['review_id']).last().id
 
         serialized_data = serializer.data
         serialized_data['next_id'] = next_id
