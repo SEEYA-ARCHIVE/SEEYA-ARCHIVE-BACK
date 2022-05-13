@@ -14,7 +14,7 @@ class SeatReviewsSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'create_at', 'images']
+        fields = ['id', 'create_at', 'images','update_at']
 
 
 class ReviewSerializer(ModelSerializer):
