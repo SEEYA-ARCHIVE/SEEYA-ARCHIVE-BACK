@@ -43,8 +43,8 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
-    'https://www.seeya-archive.com:3000',
-    'https://seeya-archive.com:3000',
+    'https://www.seeya-archive.com',
+    'https://seeya-archive.com',
 )
 
 CORS_ALLOW_CREDENTIALS = True
