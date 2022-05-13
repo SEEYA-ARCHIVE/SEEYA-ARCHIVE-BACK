@@ -17,7 +17,9 @@ SECRET_KEY = get_secret("SECRET_KEY")
 
 
 ALLOWED_HOSTS = ['localhost'
-                , get_secret('HOST')
+                , get_secret('HOST'),
+                 'https://www.seeya-archive.com',
+                 'https://seeya-archive.com'
                  ]
 
 DATABASES = {
