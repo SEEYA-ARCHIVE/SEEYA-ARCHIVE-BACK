@@ -9,9 +9,9 @@ services:
       - static:/home/SEEYA-ARCHIVE-BACK/staticfiles
       - media:/home/SEEYA-ARCHIVE-BACK/media
     ports:
-      - 80:80
+      - "80:80"
+
     depends_on:
-      - postgredb
       - gunicorn_server
     restart: always
 
@@ -23,8 +23,6 @@ services:
     volumes:
       - static:/home/SEEYA-ARCHIVE-BACK/staticfiles
       - media:/home/SEEYA-ARCHIVE-BACK/media
-    depends_on:
-      - postgredb
     restart: always
     secrets:
       - SECRET_KEY
@@ -36,18 +34,6 @@ services:
       - DB_HOST
       - DB_PORT
       - HOST
-
-  postgredb:
-      image: postgres:latest
-      networks:
-        - network
-      ports:
-        - 5432:5432
-      environment:
-        POSTGRES_DB: seeyadb
-        POSTGRES_PASSWORD: seeyaarchive123!
-        POSTGRES_USER: seeyadb
-      restart: always
 
 networks:
   network:

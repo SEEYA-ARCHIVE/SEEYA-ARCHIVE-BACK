@@ -16,7 +16,7 @@ class SeatReviewsViewSet(ListAPIView):
 
     def get_queryset(self):
         seat_area_id = self.kwargs['seat_area_id']
-        queryset = Review.objects.filter(seat_area_id=seat_area_id)
+        queryset = Review.objects.filter(seat_area_id=seat_area_id).order_by('-create_at')
         return queryset
 
 
