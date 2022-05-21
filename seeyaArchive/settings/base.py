@@ -13,6 +13,21 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
+secret_file = os.path.join(BASE_DIR, 'secrets.json')
+with open(secret_file) as f:
+    secrets = json.loads(f.read())
+
+
+def get_secret(setting):
+    try:
+        return secrets[setting]
+    except KeyError:
+        error_msg = 'Set the {} environment variable'.format(setting)
+        raise ImproperlyConfigured(error_msg)
+
+
+SECRET_KEY = get_secret('SECRET_KEY')
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -23,12 +38,32 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'seat_reviews',
     'concert_halls',
+    'accounts',
     # admin image
     'sorl.thumbnail',
-    'rest_framework',
     'drf_yasg',
     'corsheaders',
+    # django-rest-framework
+    'rest_framework',
+    # django-allauth
+    'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # provider
+    # 'allauth.socialaccount.providers.kakao',
 ]
+
+SOCIAL_OAUTH_CONFIG = {
+    'KAKAO_REST_API_KEY': get_secret('KAKAO_REST_API_KEY'),
+    'KAKAO_REDIRECT_URI': get_secret('KAKAO_REDIRECT_URI'),
+    'KAKAO_SECRET_KEY': get_secret('KAKAO_SECRET_KEY'),
+    'KAKAO_ADMIN_KEY': get_secret('KAKAO_ADMIN_KEY'),
+}
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -42,9 +77,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_WHITELIST = (
-    "http://localhost:3000",
-    "https://www.seeya-archive.com",
-    "https://seeya-archive.com",
+    'http://localhost:3000',
+    'https://www.seeya-archive.com',
+    'https://seeya-archive.com',
 )
 
 CORS_ALLOW_CREDENTIALS = True
@@ -136,3 +171,5 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'accounts.User'
