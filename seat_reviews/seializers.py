@@ -33,4 +33,4 @@ class ReviewSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'concert_hall_name', 'create_at', 'update_at', 'seat_area', 'images', 'artist']
+        fields = ['id', 'concert_hall_name', 'create_at', 'update_at', 'seat_area', 'images', 'artist', 'review']
