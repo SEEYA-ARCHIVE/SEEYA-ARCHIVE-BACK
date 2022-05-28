@@ -1,12 +1,10 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-from sorl.thumbnail import get_thumbnail
-from django.utils.html import format_html
+import os
 
 
-# def get_review_image_path(self, filename):
-#     return '{}'.format(filename)
-
+def get_review_image_path(self, filename):
+    return os.path.join('review-images', filename)
 
 class Review(models.Model):
     # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)

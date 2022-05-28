@@ -1,6 +1,12 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+import os
+
+from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, CreateAPIView
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
-from .seializers import SeatReviewsSerializer, ReviewSerializer
+from django.core.files.storage import default_storage
+
+from concert_halls.models import SeatArea, ConcertHall
+from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer
 from .models import Review
 from rest_framework.pagination import PageNumberPagination
 
@@ -49,3 +55,25 @@ class DetailReview(RetrieveAPIView):
 
         return Response(serialized_data)
 
+
+class ReviewUploadView(CreateAPIView):
+    parser_classes = (MultiPartParser, FormParser)
+    queryset = Review.objects.all()
+    serializer_class = ReviewUploadSerializer
+
+    def perform_create(self, serializer):
+        concert_hall = self.request.data['concert_hall']
+        concert_hall_floor = self.request.data['floor']
+        concert_hall_area = self.request.data['area']
+        concnerthall_id = ConcertHall.objects.all().filter(name=concert_hall).first().id
+        seatarea_id = SeatArea.objects.all().filter(concert_hall=concnerthall_id).filter(
+            floor=concert_hall_floor).filter(area=concert_hall_area).first().id
+        request_data = self.request.data
+        request_data['seat_area'] = seatarea_id
+        serializer = self.get_serializer(data=request_data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        image_files = self.request.data.getlist('images')
+        for image_file in image_files:
+            image_full_url = os.path.join('review-images', image_file.name)
+            default_storage.save(image_full_url, image_file)

@@ -34,3 +34,10 @@ class ReviewSerializer(ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'concert_hall_name', 'create_at', 'update_at', 'seat_area', 'images', 'artist', 'review']
+
+class ReviewUploadSerializer(ModelSerializer):
+    images = serializers.ListField(child=serializers.ImageField(use_url=False))
+
+    class Meta:
+        model = Review
+        fields = ['seat_area', 'images', 'artist', 'review']
