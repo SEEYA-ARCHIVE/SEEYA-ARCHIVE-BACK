@@ -1,10 +1,14 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
 import os
+from datetime import datetime
 
 
-def get_review_image_path(self, filename):
-    return os.path.join('review-images', filename)
+
+def get_review_image_path(self, filename_full):
+    current_date = datetime.now().strftime("%Y%m%d-%H%M%S")
+    filename, file_extension = os.path.splitext(filename_full)
+    return os.path.join('review-images', current_date + file_extension)
 
 class Review(models.Model):
     # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -12,7 +16,7 @@ class Review(models.Model):
                                   related_name="reviews",
                                   on_delete=models.SET_NULL,
                                   null=True)
-    images = ArrayField(models.CharField(max_length=512))
+    # images = ArrayField(models.CharField(max_length=512))
     artist = models.CharField(max_length=128, blank=True, null=True)
     seat_row = models.CharField(max_length=128, blank=True, null=True)
     seat_num = models.CharField(max_length=128, blank=True, null=True)
@@ -22,6 +26,10 @@ class Review(models.Model):
 
     def __str__(self):
         return "review_{}".format(self.id)
+
+class ReviewImage(models.Model):
+   review = models.ForeignKey(Review, on_delete=models.CASCADE)
+   image = models.ImageField(upload_to=get_review_image_path)
 
 
 # class AdminPost(models.Model):

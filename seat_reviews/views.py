@@ -1,9 +1,6 @@
-import os
-
-from rest_framework.generics import ListAPIView, RetrieveAPIView, ListCreateAPIView, CreateAPIView
-from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from django.core.files.storage import default_storage
+from rest_framework.viewsets import ModelViewSet
 
 from concert_halls.models import SeatArea, ConcertHall
 from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer
@@ -39,6 +36,7 @@ class DetailReview(RetrieveAPIView):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         queryset = self.get_queryset()
+
         if queryset.filter(id__gt=self.kwargs['review_id']).first() is None:
             next_id = None
         else:
@@ -56,24 +54,57 @@ class DetailReview(RetrieveAPIView):
         return Response(serialized_data)
 
 
-class ReviewUploadView(CreateAPIView):
-    parser_classes = (MultiPartParser, FormParser)
+class ReviewUploadView(ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewUploadSerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'review_id'
 
     def perform_create(self, serializer):
         concert_hall = self.request.data['concert_hall']
         concert_hall_floor = self.request.data['floor']
         concert_hall_area = self.request.data['area']
-        concnerthall_id = ConcertHall.objects.all().filter(name=concert_hall).first().id
-        seatarea_id = SeatArea.objects.all().filter(concert_hall=concnerthall_id).filter(
+        concerthall_id = ConcertHall.objects.all().filter(name=concert_hall).first().id
+        seatarea_id = SeatArea.objects.all().filter(concert_hall=concerthall_id).filter(
             floor=concert_hall_floor).filter(area=concert_hall_area).first().id
         request_data = self.request.data
         request_data['seat_area'] = seatarea_id
+
         serializer = self.get_serializer(data=request_data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        image_files = self.request.data.getlist('images')
-        for image_file in image_files:
-            image_full_url = os.path.join('review-images', image_file.name)
-            default_storage.save(image_full_url, image_file)
+
+    def perform_update(self, serializer):
+        concert_hall = self.request.data['concert_hall']
+        concert_hall_floor = self.request.data['floor']
+        concert_hall_area = self.request.data['area']
+        concerthall_id = ConcertHall.objects.all().filter(name=concert_hall).first().id
+        seatarea_id = SeatArea.objects.all().filter(concert_hall=concerthall_id).filter(
+            floor=concert_hall_floor).filter(area=concert_hall_area).first().id
+        request_data = self.request.data
+        request_data['seat_area'] = seatarea_id
+
+        partial = self.kwargs.pop('partial', False)
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request_data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
+    # def perform_create(self, serializer):
+    #     concert_hall = self.request.data['concert_hall']
+    #     concert_hall_floor = self.request.data['floor']
+    #     concert_hall_area = self.request.data['area']
+    #     concerthall_id = ConcertHall.objects.all().filter(name=concert_hall).first().id
+    #     seatarea_id = SeatArea.objects.all().filter(concert_hall=concerthall_id).filter(
+    #         floor=concert_hall_floor).filter(area=concert_hall_area).first().id
+    #     request_data = self.request.data
+    #     request_data['seat_area'] = seatarea_id
+    #
+    #     serializer = self.get_serializer(data=request_data)
+    #     serializer.is_valid(raise_exception=True)
+    #     serializer.save()
+    #     image_files = self.request.data.getlist('images')
+    #     for image_file in image_files:
+    #         image_full_url = os.path.join('review-images', image_file.name)
+    #         default_storage.save(image_full_url, image_file)
+
