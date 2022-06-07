@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from concert_halls.models import SeatArea, ConcertHall
-from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer
+from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer, ViewComparisonSerializer
 from .models import Review
 from rest_framework.pagination import PageNumberPagination
 
@@ -108,3 +108,14 @@ class ReviewUploadView(ModelViewSet):
     #         image_full_url = os.path.join('review-images', image_file.name)
     #         default_storage.save(image_full_url, image_file)
 
+
+class ViewComparisonView(ListAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ViewComparisonSerializer
+
+
+    def get_queryset(self):
+        concerthall_id = ConcertHall.objects.all().filter(name=self.request.GET['concert_hall_name']).first().id
+        seat_area_id = SeatArea.objects.all().filter(concert_hall=concerthall_id).filter(
+            floor=self.request.GET['floor']).filter(area=self.request.GET['seat_area_name']).first().id
+        return self.queryset.select_related('seat_area').filter(seat_area_id=seat_area_id)

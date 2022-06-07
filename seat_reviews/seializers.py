@@ -57,3 +57,14 @@ class ReviewUploadSerializer(ModelSerializer):
         for image_data in images_data.getlist('image'):
             ReviewImage.objects.create(review=review, image=image_data)
         return review
+
+class ViewComparisonSerializer(ModelSerializer):
+    images = serializers.SerializerMethodField()
+
+    def get_images(self, obj):
+        images = list(obj.reviewimage_set.all().values_list('image', flat=True))
+        return [os.path.join(settings.MEDIA_URL, image) for image in images]
+
+    class Meta:
+        model = Review
+        fields = ['id', 'images', 'review']
