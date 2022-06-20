@@ -3,10 +3,11 @@ from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView,
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from concert_halls.models import SeatArea, ConcertHall
-from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer, ViewComparisonSerializer, ReviewLikesSerializer
+from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer, ViewComparisonSerializer, \
+    ReviewLikesSerializer, ConcertHallSerializer, SeatAreaSerializer
 from .models import Review, Likes
 from rest_framework.pagination import PageNumberPagination
 
@@ -37,9 +38,24 @@ class SeatReviewsViewSet(ListAPIView):
         return queryset
 
 
+class ConcertHallViewSet(ListAPIView):
+    serializer_class = ConcertHallSerializer
+    queryset = ConcertHall.objects.all()
+
+class ConsertSeatAreaView(ListAPIView):
+    serializer_class = SeatAreaSerializer
+
+    def get_queryset(self):
+        concert_hall_id = self.kwargs['concert_hall_id']
+        queryset = SeatArea.objects.filter(concert_hall_id=concert_hall_id)
+        return queryset
+
+
+
+
 class DetailReview(RetrieveAPIView):
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+    serializer_class = SeatAreaSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'review_id'
 
@@ -66,6 +82,24 @@ class DetailReview(RetrieveAPIView):
         serialized_data['previous_id'] = previous_id
 
         return Response(serialized_data)
+
+#
+# class SeatAreaViewSet(ReadOnlyModelViewSet):
+#     serializer_class = ConcertHallSerializer
+#     queryset = ConcertHall.objects.all()
+#     lookup_field = "id"
+#     lookup_url_kwarg = "concert_hall_id"
+#
+#     def get_queryset(self):
+#         return self.queryset.select_related('seat_area').filter(seat_area_id=self.kwargs['seat_area_id'])
+
+
+
+class ConcertHallViewSet(ListAPIView):
+    serializer_class = ConcertHallSerializer
+    queryset = ConcertHall.objects.all()
+    lookup_field = "id"
+    lookup_url_kwarg = "concert_hall_id"
 
 
 class ReviewUploadView(ModelViewSet):
@@ -116,7 +150,7 @@ class ReviewUploadView(ModelViewSet):
         obj = serializer.save(writer=self.request.user)
 
         return obj.id
-    
+
     def perform_update(self, serializer):
         concert_hall = self.request.data['concert_hall']
         concert_hall_floor = self.request.data['floor']
