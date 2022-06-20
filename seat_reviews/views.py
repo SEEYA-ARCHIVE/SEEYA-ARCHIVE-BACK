@@ -1,10 +1,12 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework import status
+from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 
 from concert_halls.models import SeatArea, ConcertHall
-from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer, ViewComparisonSerializer
-from .models import Review
+from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer, ViewComparisonSerializer, ReviewLikesSerializer
+from .models import Review, Likes
 from rest_framework.pagination import PageNumberPagination
 
 
@@ -69,10 +71,9 @@ class ReviewUploadView(ModelViewSet):
             floor=concert_hall_floor).filter(area=concert_hall_area).first().id
         request_data = self.request.data
         request_data['seat_area'] = seatarea_id
-
         serializer = self.get_serializer(data=request_data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(writer=self.request.user)
 
     def perform_update(self, serializer):
         concert_hall = self.request.data['concert_hall']
@@ -88,7 +89,7 @@ class ReviewUploadView(ModelViewSet):
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request_data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        serializer.save(writer=self.request.user)
 
     # def perform_create(self, serializer):
     #     concert_hall = self.request.data['concert_hall']
@@ -113,9 +114,25 @@ class ViewComparisonView(ListAPIView):
     queryset = Review.objects.all()
     serializer_class = ViewComparisonSerializer
 
-
     def get_queryset(self):
         concerthall_id = ConcertHall.objects.all().filter(name=self.request.GET['concert_hall_name']).first().id
         seat_area_id = SeatArea.objects.all().filter(concert_hall=concerthall_id).filter(
             floor=self.request.GET['floor']).filter(area=self.request.GET['seat_area_name']).first().id
         return self.queryset.select_related('seat_area').filter(seat_area_id=seat_area_id)
+
+class ReviewLikesView(APIView):
+
+    def get(self, request, review_id):
+        review = Likes.objects.filter(review_id = review_id)
+        like_count = review.count()
+        return Response({'like_counts' : like_count})
+
+    def post(self,request,review_id):
+
+        likeusers = request.user
+        likepost = Review.objects.filter(id=review_id)
+        new_like = Likes(user=likeusers, review=likepost.last())
+        new_like.save()
+        serializer = ReviewLikesSerializer(data=new_like)
+        serializer.is_valid()
+        return Response(serializer.data,status=status.HTTP_201_CREATED)
