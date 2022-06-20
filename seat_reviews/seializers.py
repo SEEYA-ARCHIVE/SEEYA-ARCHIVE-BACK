@@ -53,6 +53,7 @@ class ReviewUploadSerializer(ModelSerializer):
 
     def create(self, validated_data):
         images_data = self.context['request'].FILES
+        validated_data['writer'] = self.context['request'].user
         review = Review.objects.create(**validated_data)
         for image_data in images_data.getlist('images'):
             ReviewImage.objects.create(review=review, image=image_data)
