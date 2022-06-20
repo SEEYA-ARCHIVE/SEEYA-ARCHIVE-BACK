@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework.serializers import ModelSerializer
-from .models import Review, ReviewImage
+from .models import Review, ReviewImage, User, Likes
 from rest_framework import serializers
 import os
 
@@ -36,7 +36,7 @@ class ReviewSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'concert_hall_name', 'create_at', 'update_at', 'seat_area', 'images', 'artist', 'review']
+        fields = ['id', 'concert_hall_name', 'create_at', 'update_at', 'seat_area', 'images', 'artist', 'review', 'writer']
 
 class PostImageSerializer(ModelSerializer):
     class Meta:
@@ -49,12 +49,12 @@ class ReviewUploadSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'seat_area', 'images','create_at','update_at', 'artist', 'review']
+        fields = ['id', 'seat_area', 'review', 'images' ,'create_at','update_at','writer']
 
     def create(self, validated_data):
         images_data = self.context['request'].FILES
         review = Review.objects.create(**validated_data)
-        for image_data in images_data.getlist('image'):
+        for image_data in images_data.getlist('images'):
             ReviewImage.objects.create(review=review, image=image_data)
         return review
 
@@ -68,3 +68,12 @@ class ViewComparisonSerializer(ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'images', 'review']
+
+class ReviewLikesSerializer(ModelSerializer):
+
+    class Meta:
+        model = Likes
+        fields = '__all__'
+
+
+
