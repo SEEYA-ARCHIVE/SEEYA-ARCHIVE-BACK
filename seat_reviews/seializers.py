@@ -1,6 +1,6 @@
 from django.conf import settings
 from rest_framework.serializers import ModelSerializer
-from .models import Review, ReviewImage, User, Likes
+from .models import Review, ReviewImage, Likes
 from concert_halls.models import ConcertHall, SeatArea
 from rest_framework import serializers
 import os

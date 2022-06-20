@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 import os
 from datetime import datetime
 from django.contrib.auth.models import AbstractUser
@@ -19,7 +18,6 @@ class User(AbstractUser):
             settings.AUTH_USER_MODEL,
             related_name='User_nick_name'
         )
-    # liked_reviews = models.ManyToManyField('Review', through='Likes')
 
 
 
@@ -29,10 +27,6 @@ class Review(models.Model):
                                   related_name='reviews',
                                   on_delete=models.SET_NULL,
                                   null=True)
-    # images = ArrayField(models.CharField(max_length=512))
-    # like_users = models.ManyToManyField('User', related_name='review_like_users', null=True,
-    #                                     through='Likes')
-
 
     artist = models.CharField(max_length=128, blank=True, null=True)
     seat_row = models.CharField(max_length=128, blank=True, null=True)

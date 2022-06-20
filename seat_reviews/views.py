@@ -1,12 +1,12 @@
 from rest_framework import status
-from rest_framework.generics import ListAPIView, RetrieveAPIView, CreateAPIView, DestroyAPIView
+from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from concert_halls.models import SeatArea, ConcertHall
-from .seializers import SeatReviewsSerializer, ReviewSerializer, ReviewUploadSerializer, ViewComparisonSerializer, \
+from .seializers import SeatReviewsSerializer, ReviewUploadSerializer, ViewComparisonSerializer, \
     ReviewLikesSerializer, ConcertHallSerializer, SeatAreaSerializer
 from .models import Review, Likes
 from rest_framework.pagination import PageNumberPagination
@@ -82,17 +82,6 @@ class DetailReview(RetrieveAPIView):
         serialized_data['previous_id'] = previous_id
 
         return Response(serialized_data)
-
-#
-# class SeatAreaViewSet(ReadOnlyModelViewSet):
-#     serializer_class = ConcertHallSerializer
-#     queryset = ConcertHall.objects.all()
-#     lookup_field = "id"
-#     lookup_url_kwarg = "concert_hall_id"
-#
-#     def get_queryset(self):
-#         return self.queryset.select_related('seat_area').filter(seat_area_id=self.kwargs['seat_area_id'])
-
 
 
 class ConcertHallViewSet(ListAPIView):
