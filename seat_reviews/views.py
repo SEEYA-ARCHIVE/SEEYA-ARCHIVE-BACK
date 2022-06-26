@@ -1,7 +1,9 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
-from .seializers import SeatReviewsSerializer, ReviewSerializer
-from .models import Review
+from rest_framework.viewsets import ModelViewSet
+from rest_framework import permissions
+from .serializers import SeatReviewListSerializer, DetailReviewSerializer, CommentSerializer
+from .models import Review, Comment
 from rest_framework.pagination import PageNumberPagination
 
 
@@ -9,9 +11,16 @@ class Pagination(PageNumberPagination):
     page_size = 6
 
 
-class SeatReviewsViewSet(ListAPIView):
+class IsCommentAuthorOrReadOnly(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return obj.user == request.user
+
+
+class ReviewListViewSet(ListAPIView):
     queryset = Review.objects.all()
-    serializer_class = SeatReviewsSerializer
+    serializer_class = SeatReviewListSerializer
     pagination_class = Pagination
 
     def get_queryset(self):
@@ -20,9 +29,9 @@ class SeatReviewsViewSet(ListAPIView):
         return queryset
 
 
-class DetailReview(RetrieveAPIView):
+class DetailReviewViewSet(RetrieveAPIView):
     queryset = Review.objects.all()
-    serializer_class = ReviewSerializer
+    serializer_class = DetailReviewSerializer
     lookup_field = 'id'
     lookup_url_kwarg = 'review_id'
 
@@ -49,3 +58,10 @@ class DetailReview(RetrieveAPIView):
 
         return Response(serialized_data)
 
+
+class CommentViewSet(ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = [IsCommentAuthorOrReadOnly]
+
+    def get_queryset(self):
+        return Comment.objects.filter(review=self.kwargs['review_id'])
