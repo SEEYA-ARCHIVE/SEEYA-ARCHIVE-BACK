@@ -60,8 +60,6 @@ def kakao_login_callback(request):
         headers={"Authorization": f"Bearer {access_token}", },
     )
     json_response = profile_request.json()
-    print(json_response)
-    print(token_info.json())
     kakao_account = json_response.get("kakao_account")
     kakao_id = json_response.get('id')
     email = kakao_account.get("email", None)
