@@ -8,7 +8,6 @@ urlpatterns = [
     path('', include('concert_halls.urls')),
     path('', include('seat_reviews.urls')),
     path('', include('accounts.urls')),
-    # path('accounts/', include('allauth.urls')),
   ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 from rest_framework import permissions
