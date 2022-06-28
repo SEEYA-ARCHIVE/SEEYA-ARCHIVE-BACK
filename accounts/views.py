@@ -111,7 +111,7 @@ def kakao_logout(request):
     return redirect("/")
 
 
-def kakao_secession(request):
+def kakao_withdrawal(request):
     user = User.objects.get(pk=request.user.pk)
     requests.post(
         f"https://kapi.kakao.com/v1/user/unlink?target_id_type=user_id&target_id={request.user.kakao_id}",
