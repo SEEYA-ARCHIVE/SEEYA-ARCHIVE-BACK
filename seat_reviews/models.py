@@ -9,22 +9,32 @@ from django.utils.html import format_html
 
 
 class Review(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey('accounts.User', related_name='user_reviews', on_delete=models.SET_NULL, null=True)
     seat_area = models.ForeignKey("concert_halls.SeatArea",
-                                  related_name="reviews",
+                                  related_name="seat_area_reviews",
                                   on_delete=models.SET_NULL,
                                   null=True)
     images = ArrayField(models.CharField(max_length=512))
     artist = models.CharField(max_length=128, blank=True, null=True)
     seat_row = models.CharField(max_length=128, blank=True, null=True)
     seat_num = models.CharField(max_length=128, blank=True, null=True)
-    review = models.TextField(blank=True, null=True)
+    reviews = models.TextField(blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return "review_{}".format(self.id)
 
+
+class Comment(models.Model):
+    user = models.ForeignKey('accounts.User', related_name='users', on_delete=models.CASCADE)
+    review = models.ForeignKey('seat_reviews.Review', related_name='comments', on_delete=models.CASCADE)
+    comment = models.CharField(max_length=1024)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "id:{} comment:{}..".format(self.id, self.comment[:15])
 
 # class AdminPost(models.Model):
 #     concert_hall = models.CharField(max_length=128, blank=True, null=True, default="올림픽홀")
