@@ -35,7 +35,7 @@ class SetNicknameView(mixins.RetrieveModelMixin,
 
 
 @api_view(['GET'])
-def kakao_login():
+def kakao_login(request):
     return redirect(
         f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code"
     )
@@ -111,7 +111,7 @@ def kakao_logout(request):
     return redirect("/")
 
 
-def kakao_secession(request):
+def kakao_withdrawal(request):
     user = User.objects.get(pk=request.user.pk)
     requests.post(
         f"https://kapi.kakao.com/v1/user/unlink?target_id_type=user_id&target_id={request.user.kakao_id}",
