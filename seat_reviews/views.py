@@ -1,7 +1,6 @@
-from rest_framework.generics import ListAPIView, RetrieveAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework import permissions
+from rest_framework.permissions import SAFE_METHODS, BasePermission
 from .serializers import SeatReviewListSerializer, DetailReviewSerializer, CommentSerializer
 from .models import Review, Comment
 from rest_framework.pagination import PageNumberPagination
@@ -11,57 +10,53 @@ class Pagination(PageNumberPagination):
     page_size = 6
 
 
-class IsCommentAuthorOrReadOnly(permissions.BasePermission):
+class IsAuthorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
-        if request.method in permissions.SAFE_METHODS:
+        if request.method in SAFE_METHODS:
             return True
         return obj.user == request.user
 
 
-class ReviewListViewSet(ListAPIView):
+class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
-    serializer_class = SeatReviewListSerializer
     pagination_class = Pagination
+    permission_classes = [IsAuthorOrReadOnly]
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return SeatReviewListSerializer
+        else:
+            return DetailReviewSerializer
 
     def get_queryset(self):
         seat_area_id = self.kwargs['seat_area_id']
-        queryset = Review.objects.filter(seat_area_id=seat_area_id).order_by('-create_at')
-        return queryset
-
-
-class DetailReviewViewSet(RetrieveAPIView):
-    queryset = Review.objects.all()
-    serializer_class = DetailReviewSerializer
-    lookup_field = 'id'
-    lookup_url_kwarg = 'review_id'
-
-    def get_queryset(self):
-        return self.queryset.select_related('seat_area').filter(seat_area_id=self.kwargs['seat_area_id'])
+        return self.queryset.filter(seat_area=seat_area_id).all()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         queryset = self.get_queryset()
-        if queryset.filter(id__gt=self.kwargs['review_id']).first() is None:
-            next_id = None
-        else:
-            next_id = queryset.filter(id__gt=self.kwargs['review_id']).first().id
+        pk = self.kwargs['pk']
 
-        if queryset.filter(id__lt=self.kwargs['review_id']).last() is None:
-            previous_id = None
-        else:
-            previous_id = queryset.filter(id__lt=self.kwargs['review_id']).last().id
+        next_id, previous_id = None, None
+        next_obj = queryset.filter(id__gt=pk).first()
+        if next_obj is not None:
+            next_id = next_obj.id
+
+        prev_obj = queryset.filter(id__lt=pk).last()
+        if prev_obj is not None:
+            previous_id = prev_obj.id
 
         serialized_data = serializer.data
-        serialized_data['next_id'] = next_id
         serialized_data['previous_id'] = previous_id
+        serialized_data['next_id'] = next_id
 
         return Response(serialized_data)
 
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsCommentAuthorOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly]
 
     def get_queryset(self):
         return Comment.objects.filter(review=self.kwargs['review_id'])
