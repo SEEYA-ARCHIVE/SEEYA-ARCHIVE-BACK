@@ -18,7 +18,6 @@ class Migration(migrations.Migration):
             name='Review',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('images', django.contrib.postgres.fields.ArrayField(base_field=models.CharField(max_length=512), size=None)),
                 ('artist', models.CharField(blank=True, max_length=128, null=True)),
                 ('seat_row', models.CharField(blank=True, max_length=128, null=True)),
                 ('seat_num', models.CharField(blank=True, max_length=128, null=True)),
