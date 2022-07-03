@@ -10,7 +10,7 @@ comment_router.register('comments', CommentViewSet, basename='comment')
 
 
 urlpatterns = [
-    path('seat_areas/<int:seat_area_id>/reviews', SeatReviewsViewSet.as_view()),
+    path('seat_areas/<int:seat_area_id>/reviews/', SeatReviewsViewSet.as_view()),
     path('seat_areas/<int:seat_area_id>/reviews/<int:review_id>', DetailReview.as_view()),
     path('reviews/concert_halls', ConcertHallViewSet.as_view()),
     path('reviews/concert_halls/<int:concert_hall_id>/seat_areas', ConsertSeatAreaView.as_view()),
