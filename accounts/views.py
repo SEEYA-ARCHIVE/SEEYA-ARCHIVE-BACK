@@ -13,7 +13,7 @@ from django.contrib.auth import login, logout
 from .serializers import MyPageSerializer
 from django.views.decorators.csrf import csrf_exempt
 
-if settings.debug is True:
+if settings.DEBUG is True:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
 else:
     from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
