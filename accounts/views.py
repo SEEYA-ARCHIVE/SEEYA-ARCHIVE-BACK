@@ -1,15 +1,22 @@
 import random
+
+from django.conf import settings
 from django.shortcuts import redirect
 import requests
 from http import HTTPStatus
 from rest_framework.response import Response
-from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
+
 from rest_framework.decorators import api_view
 from rest_framework import mixins, generics
 from .models import User
 from django.contrib.auth import login, logout
 from .serializers import MyPageSerializer
 from django.views.decorators.csrf import csrf_exempt
+
+if settings.debug is True:
+    from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
+else:
+    from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
 
 KAKAO_REST_API_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_REST_API_KEY']
 KAKAO_REDIRECT_URI = SOCIAL_OAUTH_CONFIG['KAKAO_REDIRECT_URI']
