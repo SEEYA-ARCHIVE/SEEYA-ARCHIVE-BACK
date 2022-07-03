@@ -60,6 +60,13 @@ CORS_ORIGIN_WHITELIST = (
     'https://api.seeya-archive.com',
 )
 
+CSRF_TRUSTED_ORIGINS = (
+    'http://localhost:3000',
+    'https://www.seeya-archive.com',
+    'https://seeya-archive.com',
+    'https://api.seeya-archive.com',
+)
+
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_METHODS = (
