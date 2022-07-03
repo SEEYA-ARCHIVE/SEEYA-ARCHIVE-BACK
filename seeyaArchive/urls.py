@@ -7,7 +7,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('concert_halls.urls')),
     path('', include('seat_reviews.urls')),
-  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    path('', include('accounts.urls')),
+
+              ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view

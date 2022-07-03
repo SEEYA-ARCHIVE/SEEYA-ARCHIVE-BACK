@@ -15,6 +15,18 @@ def get_secret(secret_name):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
+# 카카오 로그인
+SOCIAL_OAUTH_CONFIG = {
+    'KAKAO_REST_API_KEY': get_secret('KAKAO_REST_API_KEY'),
+    'KAKAO_REDIRECT_URI': get_secret('KAKAO_REDIRECT_URI'),
+    'KAKAO_SECRET_KEY': get_secret('KAKAO_SECRET_KEY'),
+    'KAKAO_ADMIN_KEY': get_secret('KAKAO_ADMIN_KEY'),
+}
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/'
+
 
 ALLOWED_HOSTS = ['localhost'
                 , get_secret('HOST'),

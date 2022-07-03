@@ -2,8 +2,6 @@ from django.conf import settings
 from django.db import models
 import os
 from datetime import datetime
-from django.contrib.auth.models import AbstractUser
-
 
 
 def get_review_image_path(self, filename_full):
@@ -12,17 +10,8 @@ def get_review_image_path(self, filename_full):
     return os.path.join('review-images', current_date + file_extension)
 
 
-
-class User(AbstractUser):
-    nick_name = models.ManyToManyField(
-            settings.AUTH_USER_MODEL,
-            related_name='User_nick_name'
-        )
-
-
-
 class Review(models.Model):
-    # user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey('accounts.User', related_name='user_reviews', on_delete=models.SET_NULL, null=True)
     seat_area = models.ForeignKey('concert_halls.SeatArea',
                                   related_name='reviews',
                                   on_delete=models.SET_NULL,
@@ -35,19 +24,26 @@ class Review(models.Model):
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
 
-    ### 임시 user 모델
-    writer = models.ForeignKey('User', related_name="review_writer", on_delete=models.SET_NULL, null=True)
-
     def __str__(self):
         return "review_{}".format(self.id)
 
 class Likes(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.User', related_name='user_likes', on_delete=models.SET_NULL, null=True)
     review = models.ForeignKey(Review, on_delete=models.CASCADE)
 
 class ReviewImage(models.Model):
    review = models.ForeignKey(Review, on_delete=models.CASCADE)
    image = models.ImageField(upload_to=get_review_image_path)
+
+class Comment(models.Model):
+    user = models.ForeignKey('accounts.User', related_name='users', on_delete=models.CASCADE)
+    review = models.ForeignKey('seat_reviews.Review', related_name='comments', on_delete=models.CASCADE)
+    comment = models.CharField(max_length=1024)
+    create_at = models.DateTimeField(auto_now_add=True)
+    update_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return "id:{} comment:{}..".format(self.id, self.comment[:15])
 
 
 # class AdminPost(models.Model):

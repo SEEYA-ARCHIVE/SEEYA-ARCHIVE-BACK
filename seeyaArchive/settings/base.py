@@ -14,6 +14,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 # SECURITY WARNING: keep the secret key used in production secret!
 
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -23,11 +24,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'seat_reviews',
     'concert_halls',
+    'accounts',
     # admin image
     'sorl.thumbnail',
-    'rest_framework',
     'drf_yasg',
     'corsheaders',
+    # django-rest-framework
+    'rest_framework',
+    # django-allauth
+    'django.contrib.sites',
+    # 'allauth',
+    # 'allauth.account',
+    # 'allauth.socialaccount',
+    # provider
+    # 'allauth.socialaccount.providers.kakao',
+
 ]
 
 MIDDLEWARE = [
@@ -39,6 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 CORS_ORIGIN_WHITELIST = (
@@ -143,5 +155,7 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+AUTH_USER_MODEL = 'accounts.User'
 
+# SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
 
