@@ -1,9 +1,11 @@
+from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-from rest_framework.permissions import SAFE_METHODS, BasePermission
-from .serializers import SeatReviewListSerializer, DetailReviewSerializer, CommentSerializer
+from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly
+from .serializers import SeatReviewListSerializer, DetailReviewSerializer, CommentSerializer # ViewComparisonSerializer
 from .models import Review, Comment
 from rest_framework.pagination import PageNumberPagination
+from concert_halls.models import ConcertHall, SeatArea
 
 
 class Pagination(PageNumberPagination):
@@ -20,10 +22,10 @@ class IsAuthorOrReadOnly(BasePermission):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
-        if self.action == 'list':
+        if self.action == 'list' or self.action == 'create':
             return SeatReviewListSerializer
         else:
             return DetailReviewSerializer
@@ -56,7 +58,18 @@ class ReviewViewSet(ModelViewSet):
 
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         return Comment.objects.filter(review=self.kwargs['review_id'])
+
+
+# class ViewComparisonView(ListAPIView):
+#     queryset = Review.objects.all()
+#     serializer_class = ViewComparisonSerializer
+#
+#     def get_queryset(self):
+#         concert_hall_id = ConcertHall.objects.all().filter(name=self.request.GET['concert_hall_name']).first().id
+#         seat_area_id = SeatArea.objects.all().filter(concert_hall=concert_hall_id).filter(
+#             floor=self.request.GET['floor']).filter(area=self.request.GET['seat_area_name']).first().id
+#         return self.queryset.select_related('seat_area').filter(seat_area_id=seat_area_id)
