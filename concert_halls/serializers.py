@@ -20,6 +20,8 @@ class SeatAreaSerializer(serializers.ModelSerializer):
 
     def get_count_reviews(self, obj):
         return obj.seat_area_reviews.count()
+
+
 # class ReviewNestingSeatAreaSerializer(serializers.ModelSerializer):
 #     seat_area_id = serializers.IntegerField(source='id')
 #     reviews = serializers.SlugRelatedField(
