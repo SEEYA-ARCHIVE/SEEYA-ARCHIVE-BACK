@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
             name='ReviewImage',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('image', models.ImageField(upload_to=seat_reviews.models.get_review_image_path)),
+                ('image', models.ImageField()),
                 ('review', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='images', to='seat_reviews.review')),
             ],
         ),
