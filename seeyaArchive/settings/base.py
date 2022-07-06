@@ -1,17 +1,10 @@
 import json
 import os
-from pathlib import Path
 
 from django.core.exceptions import ImproperlyConfigured
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-
-# Quick-start development.txt settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
 with open(secret_file) as f:
@@ -39,19 +32,11 @@ INSTALLED_APPS = [
     'seat_reviews',
     'concert_halls',
     'accounts',
-    # admin image
     'sorl.thumbnail',
     'drf_yasg',
     'corsheaders',
-    # django-rest-framework
     'rest_framework',
-    # django-allauth
     'django.contrib.sites',
-    # 'allauth',
-    # 'allauth.account',
-    # 'allauth.socialaccount',
-    # provider
-    # 'allauth.socialaccount.providers.kakao',
 ]
 
 SOCIAL_OAUTH_CONFIG = {
