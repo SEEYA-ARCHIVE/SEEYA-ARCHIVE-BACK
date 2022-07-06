@@ -1,9 +1,7 @@
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from django.contrib.auth import login, logout
-
 from seeyaArchive.settings.base import SOCIAL_OAUTH_CONFIG
-
 import random
 import requests
 from http import HTTPStatus
@@ -20,6 +18,7 @@ KAKAO_SECRET_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_SECRET_KEY']
 KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 
 
+#Mypage-set nickname
 class SetNicknameView(RetrieveModelMixin,
                       UpdateModelMixin,
                       GenericAPIView):
@@ -37,6 +36,7 @@ class SetNicknameView(RetrieveModelMixin,
         return self.queryset.get(pk=self.request.user.pk)
 
 
+#Kakao
 @api_view(['GET'])
 def kakao_login(request):
     return redirect(

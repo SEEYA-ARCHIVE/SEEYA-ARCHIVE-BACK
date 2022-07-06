@@ -7,6 +7,7 @@ from .models import Review, Comment
 from accounts.models import User
 from seeyaArchive.settings.base import SOCIAL_OAUTH_CONFIG
 
+#AWS
 AWS_ACCESS_KEY_ID = SOCIAL_OAUTH_CONFIG['MY_AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = SOCIAL_OAUTH_CONFIG['MY_AWS_SECRET_ACCESS_KEY']
 AWS_REGION = 'ap-northeast-2'
@@ -14,6 +15,7 @@ AWS_STORAGE_BUCKET_NAME = '7th-team2-seeya-archive'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
 
 
+#Exception
 class ImageRequiredException(APIException):
     status_code = 204
     default_detail = 'Image is Required'
@@ -26,6 +28,7 @@ class TooManyImagesException(APIException):
     default_code = 'RequestEntityTooLarge'
 
 
+#Serializer
 class LikeUserSerializer(ModelSerializer):
     class Meta:
         model = User

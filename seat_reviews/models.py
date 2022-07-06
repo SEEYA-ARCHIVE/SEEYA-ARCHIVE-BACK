@@ -6,7 +6,8 @@ class Review(models.Model):
     user = models.ForeignKey('accounts.User',
                              related_name='user_reviews',
                              on_delete=models.SET_NULL, null=True)
-    image_url_array = ArrayField(models.CharField(max_length=1024), blank=True, null=True)
+    image_url_array = ArrayField(models.CharField(max_length=1024),
+                                 blank=True, null=True)
     seat_area = models.ForeignKey('concert_halls.SeatArea',
                                   related_name='seat_area_reviews',
                                   on_delete=models.SET_NULL, null=True)

@@ -5,9 +5,10 @@ from .serializers import SeatReviewListSerializer, DetailReviewSerializer, Comme
     SeatReviewImageUploadS3Serializer, ViewComparisonSerializer
 from .models import Review, Comment
 from rest_framework.pagination import PageNumberPagination
-from concert_halls.models import ConcertHall, SeatArea
+from concert_halls.models import SeatArea
 
 
+#Pagination
 class Pagination(PageNumberPagination):
     page_size = 6
 
@@ -16,6 +17,7 @@ class ComparePagination(PageNumberPagination):
     page_size = 1
 
 
+#Permission
 class IsAuthorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -23,6 +25,7 @@ class IsAuthorOrReadOnly(BasePermission):
         return obj.user == request.user
 
 
+#ViewSet
 class ReviewImageUploadViewSet(ModelViewSet):
     queryset = Review.objects.none()
     serializer_class = SeatReviewImageUploadS3Serializer
