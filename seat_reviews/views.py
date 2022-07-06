@@ -1,8 +1,8 @@
-from rest_framework.generics import ListAPIView
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly
-from .serializers import SeatReviewListSerializer, DetailReviewSerializer, CommentSerializer # ViewComparisonSerializer
+from .serializers import SeatReviewListSerializer, DetailReviewSerializer, CommentSerializer, \
+    SeatReviewImageUploadS3Serializer, ViewComparisonSerializer
 from .models import Review, Comment
 from rest_framework.pagination import PageNumberPagination
 from concert_halls.models import ConcertHall, SeatArea
@@ -12,11 +12,21 @@ class Pagination(PageNumberPagination):
     page_size = 6
 
 
+class ComparePagination(PageNumberPagination):
+    page_size = 1
+
+
 class IsAuthorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True
         return obj.user == request.user
+
+
+class ReviewImageUploadViewSet(ModelViewSet):
+    queryset = Review.objects.none()
+    serializer_class = SeatReviewImageUploadS3Serializer
+    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
 class ReviewViewSet(ModelViewSet):
@@ -64,12 +74,15 @@ class CommentViewSet(ModelViewSet):
         return Comment.objects.filter(review=self.kwargs['review_id'])
 
 
-# class ViewComparisonView(ListAPIView):
-#     queryset = Review.objects.all()
-#     serializer_class = ViewComparisonSerializer
-#
-#     def get_queryset(self):
-#         concert_hall_id = ConcertHall.objects.all().filter(name=self.request.GET['concert_hall_name']).first().id
-#         seat_area_id = SeatArea.objects.all().filter(concert_hall=concert_hall_id).filter(
-#             floor=self.request.GET['floor']).filter(area=self.request.GET['seat_area_name']).first().id
-#         return self.queryset.select_related('seat_area').filter(seat_area_id=seat_area_id)
+class CompareViewSet(ReadOnlyModelViewSet):
+    queryset = Review.objects.all()
+    serializer_class = ViewComparisonSerializer
+    pagination_class = ComparePagination
+
+    def get_queryset(self):
+        concert_hall_id = self.kwargs['concert_hall_id']
+        floor = self.kwargs['floor']
+        seat_area_name = self.kwargs['seat_area_name']
+        seat_area = SeatArea.objects.filter(concert_hall_id=concert_hall_id, floor=floor, area=seat_area_name).all()
+        queryset = self.queryset.filter(seat_area__in=seat_area).all()
+        return queryset
