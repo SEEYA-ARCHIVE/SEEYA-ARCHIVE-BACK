@@ -14,7 +14,7 @@ class Review(models.Model):
     artist = models.CharField(max_length=128, blank=True, null=True)
     seat_row = models.CharField(max_length=128, blank=True, null=True)
     seat_num = models.CharField(max_length=128, blank=True, null=True)
-    reviews = models.TextField(blank=True, null=True)
+    review = models.TextField(blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
     update_at = models.DateTimeField(auto_now=True)
     like_users = models.ManyToManyField('accounts.User',
