@@ -4,18 +4,16 @@ DEBUG = False
 
 
 def get_secret(secret_name):
-    file = open('/run/secrets/' + secret_name)
-    secret = file.read()
-    secret = secret.rstrip().lstrip()
-    file.close()
-
-    return secret
+    with open('/run/secrets/' + secret_name) as file:
+        secret = file.read()
+        secret = secret.rstrip().lstrip()
+        return secret
 
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-ALLOWED_HOSTS = ['localhost'
-    , get_secret('HOST'),
+ALLOWED_HOSTS = ['localhost',
+                 get_secret('HOST'),
                  '*.seeya-archive.com',
                  'api.seeya-archive.com',
                  ]

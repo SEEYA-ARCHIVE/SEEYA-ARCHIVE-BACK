@@ -7,6 +7,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
+
 with open(secret_file) as f:
     secrets = json.loads(f.read())
 
@@ -15,13 +16,24 @@ def get_secret(setting):
     try:
         return secrets[setting]
     except KeyError:
-        error_msg = 'Set the {} environment variable'.format(setting)
+        error_msg = "Set the {} environment variable".format(setting)
         raise ImproperlyConfigured(error_msg)
 
 
-SECRET_KEY = get_secret('SECRET_KEY')
+SECRET_KEY = get_secret("SECRET_KEY")
 
 
+# 카카오 로그인
+SOCIAL_OAUTH_CONFIG = {
+    'KAKAO_REST_API_KEY': get_secret('KAKAO_REST_API_KEY'),
+    'KAKAO_REDIRECT_URI': get_secret('KAKAO_REDIRECT_URI'),
+    'KAKAO_SECRET_KEY': get_secret('KAKAO_SECRET_KEY'),
+    'KAKAO_ADMIN_KEY': get_secret('KAKAO_ADMIN_KEY'),
+}
+
+SITE_ID = 1
+
+LOGIN_REDIRECT_URL = '/'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -32,25 +44,12 @@ INSTALLED_APPS = [
     'seat_reviews',
     'concert_halls',
     'accounts',
-    'sorl.thumbnail',
+    # 'sorl.thumbnail',
     'drf_yasg',
     'corsheaders',
     'rest_framework',
     'django.contrib.sites',
 ]
-
-SOCIAL_OAUTH_CONFIG = {
-    'MY_AWS_SECRET_ACCESS_KEY': get_secret('MY_AWS_SECRET_ACCESS_KEY'),
-    'MY_AWS_ACCESS_KEY_ID': get_secret('MY_AWS_ACCESS_KEY_ID'),
-    'KAKAO_REST_API_KEY': get_secret('KAKAO_REST_API_KEY'),
-    'KAKAO_REDIRECT_URI': get_secret('KAKAO_REDIRECT_URI'),
-    'KAKAO_SECRET_KEY': get_secret('KAKAO_SECRET_KEY'),
-    'KAKAO_ADMIN_KEY': get_secret('KAKAO_ADMIN_KEY'),
-}
-
-SITE_ID = 1
-
-LOGIN_REDIRECT_URL = '/'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -67,6 +66,14 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'https://www.seeya-archive.com',
     'https://seeya-archive.com',
+    'https://api.seeya-archive.com',
+)
+
+CSRF_TRUSTED_ORIGINS = (
+    'http://localhost:3000',
+    'https://www.seeya-archive.com',
+    'https://seeya-archive.com',
+    'https://api.seeya-archive.com',
 )
 
 CORS_ALLOW_CREDENTIALS = True

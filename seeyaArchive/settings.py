@@ -44,8 +44,7 @@ INSTALLED_APPS = [
     'seat_reviews',
     'concert_halls',
     'accounts',
-    # admin image
-    'sorl.thumbnail',
+    # 'sorl.thumbnail',
     'rest_framework',
     'storages',
 ]
