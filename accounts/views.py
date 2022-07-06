@@ -18,7 +18,7 @@ KAKAO_SECRET_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_SECRET_KEY']
 KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 
 
-#Mypage-set nickname
+# Mypage-set nickname
 class SetNicknameView(RetrieveModelMixin,
                       UpdateModelMixin,
                       GenericAPIView):
@@ -36,7 +36,7 @@ class SetNicknameView(RetrieveModelMixin,
         return self.queryset.get(pk=self.request.user.pk)
 
 
-#Kakao
+# Kakao
 @api_view(['GET'])
 def kakao_login(request):
     return redirect(
