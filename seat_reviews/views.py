@@ -13,10 +13,6 @@ class Pagination(PageNumberPagination):
     page_size = 6
 
 
-class ComparePagination(PageNumberPagination):
-    page_size = 1
-
-
 #Permission
 class IsAuthorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
@@ -80,7 +76,6 @@ class CommentViewSet(ModelViewSet):
 class CompareViewSet(ReadOnlyModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ViewComparisonSerializer
-    pagination_class = ComparePagination
 
     def get_queryset(self):
         concert_hall_id = self.kwargs['concert_hall_id']
