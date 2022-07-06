@@ -18,5 +18,5 @@ urlpatterns = [
     path('seat_areas/<int:seat_area_id>/', include(review_router.urls)),
     path('seat_areas/<int:seat_area_id>/reviews/<int:review_id>/', include(comment_router.urls)),
     path('s3/upload/', include(review_image_router.urls)),
-    path('compare/<int:concert_hall_id>/<int:floor>/<str:seat_area_name>', include(compare_router.urls)),
+    path('compare', include(compare_router.urls)),
 ]

@@ -8,12 +8,12 @@ from rest_framework.pagination import PageNumberPagination
 from concert_halls.models import SeatArea
 
 
-#Pagination
+# Pagination
 class Pagination(PageNumberPagination):
     page_size = 6
 
 
-#Permission
+# Permission
 class IsAuthorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -21,7 +21,7 @@ class IsAuthorOrReadOnly(BasePermission):
         return obj.user == request.user
 
 
-#ViewSet
+# ViewSet
 class ReviewImageUploadViewSet(ModelViewSet):
     queryset = Review.objects.none()
     serializer_class = SeatReviewImageUploadS3Serializer
@@ -78,9 +78,9 @@ class CompareViewSet(ReadOnlyModelViewSet):
     serializer_class = ViewComparisonSerializer
 
     def get_queryset(self):
-        concert_hall_id = self.kwargs['concert_hall_id']
-        floor = self.kwargs['floor']
-        seat_area_name = self.kwargs['seat_area_name']
+        concert_hall_id = self.request.GET.get('concert_hall_id')
+        floor = self.request.GET.get('floor')
+        seat_area_name = self.request.GET.get('seat_area_name').upper()
         seat_area = SeatArea.objects.filter(concert_hall_id=concert_hall_id, floor=floor, area=seat_area_name).all()
         queryset = self.queryset.filter(seat_area__in=seat_area).all()
         return queryset
