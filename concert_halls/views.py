@@ -16,4 +16,3 @@ class SeatAreaViewSet(viewsets.ReadOnlyModelViewSet):
         concert_hall_id = self.kwargs['concert_hall_id']
         queryset = SeatArea.objects.filter(concert_hall_id=concert_hall_id).all()
         return queryset
-
