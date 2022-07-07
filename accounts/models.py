@@ -1,5 +1,5 @@
-from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
+from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
 from django.contrib.auth.hashers import make_password
 
@@ -60,8 +60,8 @@ class User(AbstractUser):
     login_method = models.CharField(
         max_length=16, choices=LOGIN_CHOICES, default=LOGIN_EMAIL
     )
-    is_active = models.BooleanField(default=True)  # required
-    is_admin = models.BooleanField(default=False)  # required
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'kakao_id'
     EMAIL_FIELD = 'email'

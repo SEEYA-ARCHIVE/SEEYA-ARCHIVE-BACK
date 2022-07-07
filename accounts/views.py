@@ -1,15 +1,16 @@
-import random
+from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
+from django.contrib.auth import login, logout
+from seeyaArchive.settings.base import SOCIAL_OAUTH_CONFIG
+import random
 import requests
 from http import HTTPStatus
 from rest_framework.response import Response
-from seeyaArchive.settings.base import SOCIAL_OAUTH_CONFIG
 from rest_framework.decorators import api_view
-from rest_framework import mixins, generics
+from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
+from rest_framework.generics import GenericAPIView
 from .models import User
-from django.contrib.auth import login, logout
 from .serializers import MyPageSerializer
-from django.views.decorators.csrf import csrf_exempt
 
 KAKAO_REST_API_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_REST_API_KEY']
 KAKAO_REDIRECT_URI = SOCIAL_OAUTH_CONFIG['KAKAO_REDIRECT_URI']
@@ -17,9 +18,10 @@ KAKAO_SECRET_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_SECRET_KEY']
 KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 
 
-class SetNicknameView(mixins.RetrieveModelMixin,
-                      mixins.UpdateModelMixin,
-                      generics.GenericAPIView):
+# Mypage-set nickname
+class SetNicknameView(RetrieveModelMixin,
+                      UpdateModelMixin,
+                      GenericAPIView):
     queryset = User.objects.all()
     serializer_class = MyPageSerializer
 
@@ -34,6 +36,7 @@ class SetNicknameView(mixins.RetrieveModelMixin,
         return self.queryset.get(pk=self.request.user.pk)
 
 
+# Kakao
 @api_view(['GET'])
 def kakao_login(request):
     return redirect(
