@@ -1,7 +1,11 @@
+from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from django.contrib.auth import login, logout
-from seeyaArchive.settings.base import SOCIAL_OAUTH_CONFIG
+if settings.DEBUG == True:
+    from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
+elif settings.DEBUG == False:
+    from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
 import random
 import requests
 from http import HTTPStatus
