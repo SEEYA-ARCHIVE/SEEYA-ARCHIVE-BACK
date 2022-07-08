@@ -6,36 +6,6 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
-secret_file = os.path.join(BASE_DIR, 'secrets.json')
-
-with open(secret_file) as f:
-    secrets = json.loads(f.read())
-
-
-def get_secret(setting):
-    try:
-        return secrets[setting]
-    except KeyError:
-        error_msg = "Set the {} environment variable".format(setting)
-        raise ImproperlyConfigured(error_msg)
-
-
-SECRET_KEY = get_secret("SECRET_KEY")
-
-
-# kakao, aws
-SOCIAL_OAUTH_CONFIG = {
-    'MY_AWS_SECRET_ACCESS_KEY': get_secret('MY_AWS_SECRET_ACCESS_KEY'),
-    'MY_AWS_ACCESS_KEY_ID': get_secret('MY_AWS_ACCESS_KEY_ID'),
-    'KAKAO_REST_API_KEY': get_secret('KAKAO_REST_API_KEY'),
-    'KAKAO_REDIRECT_URI': get_secret('KAKAO_REDIRECT_URI'),
-    'KAKAO_SECRET_KEY': get_secret('KAKAO_SECRET_KEY'),
-    'KAKAO_ADMIN_KEY': get_secret('KAKAO_ADMIN_KEY'),
-}
-
-SITE_ID = 1
-
-LOGIN_REDIRECT_URL = '/'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
