@@ -74,9 +74,18 @@ class SeatReviewImageUploadS3Serializer(Serializer):
 
 
 class SeatReviewListSerializer(ModelSerializer):
+    preview_image = SerializerMethodField()
+    image_url_array = SerializerMethodField()
+
+    def get_preview_image(self, obj):
+        return obj.image_url_array[0]
+
+    def get_image_url_array(self, obj):
+        return obj.image_url_array[0]
+
     class Meta:
         model = Review
-        fields = ['id', 'user', 'image_url_array', 'seat_area', 'artist', 'review']
+        fields = ['id', 'user', 'image_url_array', 'seat_area', 'artist', 'review', 'preview_image']
 
 
 class DetailReviewSerializer(ModelSerializer):
@@ -85,11 +94,15 @@ class DetailReviewSerializer(ModelSerializer):
     comments = CommentSerializer(many=True, read_only=True)
     user = UserSerializer(many=False, read_only=True)
     like_users = LikeUserSerializer(many=True, read_only=True)
+    images = SerializerMethodField()
+
+    def get_images(self, obj):
+        return obj.image_url_array
 
     class Meta:
         model = Review
         fields = ['id', 'user', 'concert_hall_name', 'image_url_array', 'create_at',
-                  'update_at', 'seat_area', 'artist', 'review', 'comments', 'like_users']
+                  'update_at', 'seat_area', 'artist', 'review', 'comments', 'like_users', 'images']
 
     def get_seat_area(self, obj):
         return obj.seat_area.area
