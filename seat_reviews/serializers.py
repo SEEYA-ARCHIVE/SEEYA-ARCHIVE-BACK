@@ -1,12 +1,17 @@
 import uuid
 import boto3
 from datetime import datetime
+
+from django.conf import settings
 from rest_framework.serializers import ModelSerializer, Serializer, SerializerMethodField
 from rest_framework.exceptions import APIException
 from .models import Review, Comment
 from accounts.models import User
-from seeyaArchive.settings.base import SOCIAL_OAUTH_CONFIG
 
+if settings.DEBUG == True:
+    from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
+elif settings.DEBUG == False:
+    from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
 # AWS
 AWS_ACCESS_KEY_ID = SOCIAL_OAUTH_CONFIG['MY_AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = SOCIAL_OAUTH_CONFIG['MY_AWS_SECRET_ACCESS_KEY']
