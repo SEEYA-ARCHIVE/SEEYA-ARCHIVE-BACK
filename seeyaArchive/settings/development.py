@@ -21,6 +21,8 @@ SECRET_KEY = get_secret("SECRET_KEY")
 
 # 카카오 로그인
 SOCIAL_OAUTH_CONFIG = {
+    'MY_AWS_SECRET_ACCESS_KEY': get_secret('MY_AWS_SECRET_ACCESS_KEY'),
+    'MY_AWS_ACCESS_KEY_ID': get_secret('MY_AWS_ACCESS_KEY_ID'),
     'KAKAO_REST_API_KEY': get_secret('KAKAO_REST_API_KEY'),
     'KAKAO_REDIRECT_URI': get_secret('KAKAO_REDIRECT_URI'),
     'KAKAO_SECRET_KEY': get_secret('KAKAO_SECRET_KEY'),
