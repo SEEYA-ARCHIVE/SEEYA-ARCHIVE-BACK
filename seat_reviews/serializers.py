@@ -92,14 +92,14 @@ class SeatReviewListSerializer(ModelSerializer):
         return obj.image_url_array[0]
 
     def get_image_url_array(self, obj):
-        if obj.image_url_array[0] is not None:
-            return obj.image_url_array[0]
+        return obj.image_url_array[0]
 
     def get_like_users(self, obj):
         return obj.like_users.count()
 
     def get_nickname(self, obj):
         return obj.user.nickname
+
 
 class DetailReviewSerializer(ModelSerializer):
     seat_area = SerializerMethodField()
