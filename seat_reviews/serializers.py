@@ -81,17 +81,25 @@ class SeatReviewImageUploadS3Serializer(Serializer):
 class SeatReviewListSerializer(ModelSerializer):
     preview_image = SerializerMethodField()
     image_url_array = SerializerMethodField()
+    like_users = SerializerMethodField()
+    nickname = SerializerMethodField()
+
+    class Meta:
+        model = Review
+        fields = ['nickname', 'user', 'seat_area', 'artist', 'review', 'like_users', 'preview_image', 'image_url_array']
 
     def get_preview_image(self, obj):
         return obj.image_url_array[0]
 
     def get_image_url_array(self, obj):
-        return obj.image_url_array[0]
+        if obj.image_url_array[0] is not None:
+            return obj.image_url_array[0]
 
-    class Meta:
-        model = Review
-        fields = ['id', 'user', 'image_url_array', 'seat_area', 'artist', 'review', 'preview_image']
+    def get_like_users(self, obj):
+        return obj.like_users.count()
 
+    def get_nickname(self, obj):
+        return obj.user.nickname
 
 class DetailReviewSerializer(ModelSerializer):
     seat_area = SerializerMethodField()
@@ -101,13 +109,13 @@ class DetailReviewSerializer(ModelSerializer):
     like_users = LikeUserSerializer(many=True, read_only=True)
     images = SerializerMethodField()
 
-    def get_images(self, obj):
-        return obj.image_url_array
-
     class Meta:
         model = Review
         fields = ['id', 'user', 'concert_hall_name', 'image_url_array', 'create_at',
                   'update_at', 'seat_area', 'artist', 'review', 'comments', 'like_users', 'images']
+
+    def get_images(self, obj):
+        return obj.image_url_array
 
     def get_seat_area(self, obj):
         return obj.seat_area.area
