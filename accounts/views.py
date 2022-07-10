@@ -8,8 +8,6 @@ elif settings.DEBUG == False:
     from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
 import random
 import requests
-from http import HTTPStatus
-from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.generics import GenericAPIView
@@ -67,6 +65,7 @@ def kakao_login_callback(request):
         headers={"Authorization": f"Bearer {access_token}", },
     )
     json_response = profile_request.json()
+    print(json_response)
     kakao_account = json_response.get("kakao_account")
     kakao_id = json_response.get('id')
     email = kakao_account.get("email", None)
@@ -84,7 +83,7 @@ def kakao_login_callback(request):
     user = User.objects.filter(kakao_id=kakao_id).first()
     if user is not None:
         login(request, user)
-        return Response(status=HTTPStatus.OK)
+        return redirect('/')
     else:
         user = User.objects.create_user(
             kakao_id=kakao_id,
@@ -104,7 +103,7 @@ def kakao_login_callback(request):
         user.set_unusable_password()
         user.save()
         login(request, user)
-        return Response(status=HTTPStatus.CREATED)
+        return redirect('/auth/nickname')
 
 
 @csrf_exempt
