@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
+from django.contrib.sessions.models import Session
 from django.contrib.auth import login, logout
 if settings.DEBUG == True:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
@@ -11,8 +12,9 @@ import requests
 from rest_framework.decorators import api_view
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.generics import GenericAPIView
+from rest_framework.viewsets import ViewSet
 from .models import User
-from .serializers import MyPageSerializer
+from .serializers import MyPageSerializer, CheckNicknameDuplicateSerializer
 
 KAKAO_REST_API_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_REST_API_KEY']
 KAKAO_REDIRECT_URI = SOCIAL_OAUTH_CONFIG['KAKAO_REDIRECT_URI']
@@ -21,11 +23,11 @@ KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 
 
 # Mypage-set nickname
-class SetNicknameView(RetrieveModelMixin,
-                      UpdateModelMixin,
-                      GenericAPIView):
+class CheckNicknameDuplicateViewSet(RetrieveModelMixin,
+                                    UpdateModelMixin,
+                                    GenericAPIView):
     queryset = User.objects.all()
-    serializer_class = MyPageSerializer
+    serializer_class = CheckNicknameDuplicateSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -35,7 +37,27 @@ class SetNicknameView(RetrieveModelMixin,
         return self.partial_update(request, *args, **kwargs)
 
     def get_object(self):
-        return self.queryset.get(pk=self.request.user.pk)
+        session_key = self.request.session.session_key
+        session = Session.objects.get(session_key=session_key)
+        uid = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=uid)
+        return user
+
+
+class MyPageViewSet(RetrieveModelMixin,
+                    GenericAPIView):
+    queryset = User.objects.all()
+    serializer_class = MyPageSerializer
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def get_object(self):
+        session_key = self.request.session.session_key
+        session = Session.objects.get(session_key=session_key)
+        uid = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=uid)
+        return user
 
 
 # Kakao
