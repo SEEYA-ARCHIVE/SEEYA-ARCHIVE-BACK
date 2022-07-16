@@ -12,7 +12,6 @@ import requests
 from rest_framework.decorators import api_view
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.generics import GenericAPIView
-from rest_framework.viewsets import ViewSet
 from .models import User
 from .serializers import MyPageSerializer, CheckNicknameDuplicateSerializer
 
@@ -87,7 +86,6 @@ def kakao_login_callback(request):
         headers={"Authorization": f"Bearer {access_token}", },
     )
     json_response = profile_request.json()
-    print(json_response)
     kakao_account = json_response.get("kakao_account")
     kakao_id = json_response.get('id')
     email = kakao_account.get("email", None)
@@ -105,7 +103,7 @@ def kakao_login_callback(request):
     user = User.objects.filter(kakao_id=kakao_id).first()
     if user is not None:
         login(request, user)
-        return redirect('/')
+        return redirect('https://seeya-archive.com/auth/nickname')
     else:
         user = User.objects.create_user(
             kakao_id=kakao_id,
@@ -125,7 +123,7 @@ def kakao_login_callback(request):
         user.set_unusable_password()
         user.save()
         login(request, user)
-        return redirect('/auth/nickname')
+        return redirect('https://seeya-archive.com/auth/nickname')
 
 
 @csrf_exempt
@@ -136,7 +134,7 @@ def kakao_logout(request):
                  "Authorization": f"KakaoAK {KAKAO_ADMIN_KEY}"},
     )
     logout(request)
-    return redirect("/")
+    return redirect("https://seeya-archive.com")
 
 
 def kakao_withdrawal(request):
@@ -148,7 +146,7 @@ def kakao_withdrawal(request):
     )
     logout(request)
     user.delete()
-    return redirect("/")
+    return redirect("https://seeya-archive.com")
 
 
 def make_random_nickname(kakao_id):
