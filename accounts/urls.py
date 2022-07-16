@@ -7,5 +7,5 @@ urlpatterns = [
     path('kakao_withdrawal/', views.kakao_withdrawal),
     path('accounts/kakao/login/callback/', views.kakao_login_callback),
     path('check/nickname/duplicate', views.CheckNicknameDuplicateViewSet.as_view()),
-    path('me', views.MyPageViewSet.as_view()),
+    path('me/', views.MyPageViewSet.as_view()),
 ]
