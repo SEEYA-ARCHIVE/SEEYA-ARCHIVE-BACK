@@ -86,7 +86,7 @@ class SeatReviewListSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['nickname', 'user', 'seat_area', 'artist', 'review', 'like_users', 'preview_image', 'image_url_array']
+        fields = ['id', 'nickname', 'user', 'seat_area', 'artist', 'review', 'like_users', 'preview_image', 'image_url_array']
 
     def get_preview_image(self, obj):
         return obj.image_url_array[0]
