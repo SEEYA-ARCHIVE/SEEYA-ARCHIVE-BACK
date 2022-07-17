@@ -74,7 +74,7 @@ class SeatReviewImageUploadS3Serializer(Serializer):
             image_data._set_name(str(uuid.uuid4()))
             s3r.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(Key='%s/%s-%s' % (bucket_name, current_date, image_data),
                                                            Body=image_data, ContentType='jpg')
-            image_url_list.append(AWS_S3_CUSTOM_DOMAIN + "/%s/%s-%s" % (bucket_name, current_date, image_data))
+            image_url_list.append('https://' + AWS_S3_CUSTOM_DOMAIN + '/%s/%s-%s' % (bucket_name, current_date, image_data))
         return self.to_representation(image_url_list)
 
 

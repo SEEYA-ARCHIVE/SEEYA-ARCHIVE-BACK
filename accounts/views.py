@@ -3,17 +3,21 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from django.contrib.sessions.models import Session
 from django.contrib.auth import login, logout
+from django.db.models import Q
 if settings.DEBUG == True:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
 elif settings.DEBUG == False:
     from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
 import random
 import requests
+from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.generics import GenericAPIView
+from rest_framework.views import APIView
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
 from .models import User
-from .serializers import MyPageSerializer, CheckNicknameDuplicateSerializer
+from .serializers import MyPageSerializer, NicknameSerializer
 
 KAKAO_REST_API_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_REST_API_KEY']
 KAKAO_REDIRECT_URI = SOCIAL_OAUTH_CONFIG['KAKAO_REDIRECT_URI']
@@ -22,11 +26,19 @@ KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 
 
 # Mypage-set nickname
-class CheckNicknameDuplicateViewSet(RetrieveModelMixin,
-                                    UpdateModelMixin,
-                                    GenericAPIView):
+class CheckNicknameDuplicateViewSet(APIView):
+    def get(self, request):
+        users = User.objects.filter(~Q(id=self.request.user.pk) & Q(nickname=request.data['nickname']))
+        if users:
+            return Response(data=False, status=HTTP_400_BAD_REQUEST)
+        return Response(data=True, status=HTTP_200_OK)
+
+
+class SetNicknameViewSet(RetrieveModelMixin,
+                         UpdateModelMixin,
+                         GenericAPIView):
     queryset = User.objects.all()
-    serializer_class = CheckNicknameDuplicateSerializer
+    serializer_class = NicknameSerializer
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -103,7 +115,7 @@ def kakao_login_callback(request):
     user = User.objects.filter(kakao_id=kakao_id).first()
     if user is not None:
         login(request, user)
-        return redirect('https://seeya-archive.com/auth/nickname')
+        return redirect('/')
     else:
         user = User.objects.create_user(
             kakao_id=kakao_id,
@@ -123,7 +135,7 @@ def kakao_login_callback(request):
         user.set_unusable_password()
         user.save()
         login(request, user)
-        return redirect('https://seeya-archive.com/auth/nickname')
+        return redirect('/')
 
 
 @csrf_exempt
