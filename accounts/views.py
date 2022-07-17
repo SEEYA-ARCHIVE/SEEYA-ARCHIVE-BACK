@@ -116,7 +116,7 @@ def kakao_login_callback(request):
     user = User.objects.filter(kakao_id=kakao_id).first()
     if user is not None:
         login(request, user)
-        return redirect('/')
+        return redirect("https://seeya-archive.com")
     else:
         user = User.objects.create_user(
             kakao_id=kakao_id,
@@ -136,7 +136,7 @@ def kakao_login_callback(request):
         user.set_unusable_password()
         user.save()
         login(request, user)
-        return redirect('/')
+        return redirect("https://seeya-archive.com/auth/nickname")
 
 
 @csrf_exempt
