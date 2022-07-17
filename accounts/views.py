@@ -28,7 +28,8 @@ KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 # Mypage-set nickname
 class CheckNicknameDuplicateViewSet(APIView):
     def get(self, request):
-        users = User.objects.filter(~Q(id=self.request.user.pk) & Q(nickname=request.data['nickname']))
+        users = User.objects.filter(~Q(id=self.request.user.pk) &
+                                    Q(nickname=self.request.GET.get('nickname')))
         if users:
             return Response(data=False, status=HTTP_400_BAD_REQUEST)
         return Response(data=True, status=HTTP_200_OK)
