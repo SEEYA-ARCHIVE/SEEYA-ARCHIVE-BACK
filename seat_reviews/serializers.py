@@ -86,13 +86,13 @@ class SeatReviewListSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'nickname', 'user', 'seat_area', 'artist', 'review', 'like_users', 'preview_image', 'image_url_array']
+        fields = ['id', 'nickname', 'user', 'seat_area', 'review', 'like_users', 'preview_image', 'image_url_array']
 
     def get_preview_image(self, obj):
         return obj.image_url_array[0]
 
     def get_image_url_array(self, obj):
-        return obj.image_url_array[0]
+        return obj.image_url_array
 
     def get_like_users(self, obj):
         return obj.like_users.count()
@@ -101,21 +101,23 @@ class SeatReviewListSerializer(ModelSerializer):
         return obj.user.nickname
 
 
-class DetailReviewSerializer(ModelSerializer):
+class SeatReviewCreateSerializer(ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'user', 'image_url_array', 'seat_area', 'review', 'create_at']
+
+
+class SeatReviewDetailSerializer(ModelSerializer):
     seat_area = SerializerMethodField()
     concert_hall_name = SerializerMethodField()
     comments = CommentSerializer(many=True, read_only=True)
     user = UserSerializer(many=False, read_only=True)
     like_users = LikeUserSerializer(many=True, read_only=True)
-    images = SerializerMethodField()
 
     class Meta:
         model = Review
         fields = ['id', 'user', 'concert_hall_name', 'image_url_array', 'create_at',
-                  'update_at', 'seat_area', 'artist', 'review', 'comments', 'like_users', 'images']
-
-    def get_images(self, obj):
-        return obj.image_url_array
+                  'update_at', 'seat_area', 'review', 'comments', 'like_users']
 
     def get_seat_area(self, obj):
         return obj.seat_area.area

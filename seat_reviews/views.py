@@ -1,11 +1,14 @@
+from django.contrib.sessions.models import Session
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly
-from .serializers import SeatReviewListSerializer, DetailReviewSerializer, CommentSerializer, \
-    SeatReviewImageUploadS3Serializer, ViewComparisonSerializer
+from .serializers import SeatReviewListSerializer, SeatReviewDetailSerializer, CommentSerializer, \
+    SeatReviewImageUploadS3Serializer, ViewComparisonSerializer, ReviewLikeUserSerializer, SeatReviewCreateSerializer
+from rest_framework.status import HTTP_201_CREATED
 from .models import Review, Comment
 from rest_framework.pagination import PageNumberPagination
 from concert_halls.models import SeatArea
+from accounts.models import User
 
 
 # Pagination
@@ -34,10 +37,12 @@ class ReviewViewSet(ModelViewSet):
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
-        if self.action == 'list' or self.action == 'create':
+        if self.action == 'list':
             return SeatReviewListSerializer
+        elif self.action == 'create':
+            return SeatReviewCreateSerializer
         else:
-            return DetailReviewSerializer
+            return SeatReviewDetailSerializer
 
     def get_queryset(self):
         seat_area_id = self.kwargs['seat_area_id']
@@ -63,6 +68,19 @@ class ReviewViewSet(ModelViewSet):
         serialized_data['next_id'] = next_id
 
         return Response(serialized_data)
+
+    def create(self, request, *args, **kwargs):
+        session_key = self.request.session.session_key
+        session = Session.objects.get(session_key=session_key)
+        uid = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=uid)
+        request.data['user'] = user.id
+        request.data['seat_area'] = self.kwargs['seat_area_id']
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
 
 
 class CommentViewSet(ModelViewSet):
