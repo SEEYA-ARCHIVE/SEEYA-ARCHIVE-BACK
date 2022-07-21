@@ -44,12 +44,12 @@ INSTALLED_APPS = [
     'seat_reviews',
     'concert_halls',
     'accounts',
-    # 'sorl.thumbnail',
     'rest_framework',
     'storages',
 ]
 
 MIDDLEWARE = [
+    "django_samesite_none.middleware.SameSiteNoneMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -141,7 +141,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
 # S3 설정을 위한 변수
 AWS_ACCESS_KEY_ID = get_secret('MY_AWS_ACCESS_KEY_ID')
