@@ -1,10 +1,6 @@
-import json
 import os
 
-from django.core.exceptions import ImproperlyConfigured
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -16,7 +12,6 @@ INSTALLED_APPS = [
     'seat_reviews',
     'concert_halls',
     'accounts',
-    # 'sorl.thumbnail',
     'drf_yasg',
     'corsheaders',
     'rest_framework',
@@ -131,7 +126,6 @@ TIME_ZONE = 'Asia/Seoul'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
