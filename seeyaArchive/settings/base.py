@@ -39,22 +39,20 @@ SESSION_COOKIE_NAME = 'sessionid'
 CSRF_COOKIE_DOMAIN = '.seeya-archive.com'
 CSRF_COOKIE_NAME = 'csrftoken'
 
-# CORS_ORIGIN_WHITELIST = (
-#     'http://localhost:3000',
-#     'https://www.seeya-archive.com',
-#     'https://seeya-archive.com',
-#     'https://api.seeya-archive.com',
-# )
-#
-# CSRF_TRUSTED_ORIGINS = (
-#     'http://localhost:3000',
-#     'https://www.seeya-archive.com',
-#     'https://seeya-archive.com',
-#     'https://api.seeya-archive.com',
-# )
+CORS_ORIGIN_WHITELIST = (
+    'http://localhost:3000',
+    'https://www.seeya-archive.com',
+    'https://seeya-archive.com',
+    'https://api.seeya-archive.com',
+)
 
-CORS_ORIGIN_WHITELIST = ['*']
-CSRF_TRUSTED_ORIGINS = ['*']
+CSRF_TRUSTED_ORIGINS = (
+    'http://localhost:3000',
+    'https://www.seeya-archive.com',
+    'https://seeya-archive.com',
+    'https://api.seeya-archive.com',
+)
+
 
 CORS_ALLOW_CREDENTIALS = True
 
