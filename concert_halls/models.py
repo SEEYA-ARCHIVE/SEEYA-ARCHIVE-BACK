@@ -13,11 +13,11 @@ class ConcertHall(models.Model):
 
 
 class SeatArea(models.Model):
-    concert_hall = models.ForeignKey("concert_halls.ConcertHall",
-                                     related_name="seat_areas",
+    concert_hall = models.ForeignKey('concert_halls.ConcertHall',
+                                     related_name='seat_areas',
                                      on_delete=models.SET_NULL, null=True)
     floor = models.PositiveSmallIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)])
     area = models.CharField(max_length=128)
 
     def __str__(self):
-        return "{}층 {}구역".format(self.floor, self.area)
+        return '{}층 {}구역'.format(self.floor, self.area)
