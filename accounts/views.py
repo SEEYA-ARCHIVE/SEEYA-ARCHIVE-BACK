@@ -4,9 +4,9 @@ from django.shortcuts import redirect
 from django.contrib.sessions.models import Session
 from django.contrib.auth import login, logout
 from django.db.models import Q
-if settings.DEBUG == True:
+if settings.DEBUG:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
-elif settings.DEBUG == False:
+elif not settings.DEBUG:
     from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
 import random
 import requests
@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
 from rest_framework.generics import GenericAPIView
 from rest_framework.views import APIView
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_403_FORBIDDEN
+from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from .models import User
 from .serializers import MyPageSerializer, NicknameSerializer
 
@@ -25,7 +25,7 @@ KAKAO_SECRET_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_SECRET_KEY']
 KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 
 
-# Mypage-set nickname
+# Nickname
 class CheckNicknameDuplicateViewSet(APIView):
     def get(self, request):
         users = User.objects.filter(~Q(id=self.request.user.pk) &
@@ -56,6 +56,7 @@ class SetNicknameViewSet(RetrieveModelMixin,
         return user
 
 
+# ViewSet
 class MyPageViewSet(RetrieveModelMixin,
                     GenericAPIView):
     queryset = User.objects.all()
@@ -76,47 +77,47 @@ class MyPageViewSet(RetrieveModelMixin,
 @api_view(['GET'])
 def kakao_login(request):
     return redirect(
-        f"https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code"
+        f'https://kauth.kakao.com/oauth/authorize?client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&response_type=code'
     )
 
 
 @api_view(['GET'])
 def kakao_login_callback(request):
-    code = request.GET.get("code", None)
+    code = request.GET.get('code', None)
     request_access_token = requests.post(
-        f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&code={code}&client_secret={KAKAO_SECRET_KEY}",
-        headers={"Accept": "application/json"},
+        f'https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_REDIRECT_URI}&code={code}&client_secret={KAKAO_SECRET_KEY}',
+        headers={'Accept': 'application/json'},
     )
     access_token_json = request_access_token.json()
-    access_token = access_token_json.get("access_token")
+    access_token = access_token_json.get('access_token')
     profile_request = requests.post(
-        "https://kapi.kakao.com/v2/user/me",
-        headers={"Content-Type": "application/x-www-form-urlencoded",
-                 "Authorization": f"Bearer {access_token}"},
+        'https://kapi.kakao.com/v2/user/me',
+        headers={'Content-Type': 'application/x-www-form-urlencoded',
+                 'Authorization': f'Bearer {access_token}'},
     )
     token_info = requests.get(
-        "https://kapi.kakao.com/v1/user/access_token_info",
-        headers={"Authorization": f"Bearer {access_token}", },
+        'https://kapi.kakao.com/v1/user/access_token_info',
+        headers={'Authorization': f'Bearer {access_token}', },
     )
     json_response = profile_request.json()
-    kakao_account = json_response.get("kakao_account")
+    kakao_account = json_response.get('kakao_account')
     kakao_id = json_response.get('id')
-    email = kakao_account.get("email", None)
-    gender = kakao_account.get("gender", None)
-    birth_year = kakao_account.get("birthyear", None)
-    birthday_type = kakao_account.get("birthday_type", None)
-    birthday = kakao_account.get("birthday", None)
-    age_range = kakao_account.get("age_range", None)
-    name = kakao_account.get("name", None)
-    profile = kakao_account.get("profile", None)
+    email = kakao_account.get('email', None)
+    gender = kakao_account.get('gender', None)
+    birth_year = kakao_account.get('birthyear', None)
+    birthday_type = kakao_account.get('birthday_type', None)
+    birthday = kakao_account.get('birthday', None)
+    age_range = kakao_account.get('age_range', None)
+    name = kakao_account.get('name', None)
+    profile = kakao_account.get('profile', None)
 
     profile_image_url = None
     if profile is not None:
-        profile_image_url = profile.get("profile_image_url")
+        profile_image_url = profile.get('profile_image_url')
     user = User.objects.filter(kakao_id=kakao_id).first()
     if user is not None:
         login(request, user)
-        return redirect("https://seeya-archive.com")
+        return redirect('https://seeya-archive.com')
     else:
         user = User.objects.create_user(
             kakao_id=kakao_id,
@@ -136,30 +137,30 @@ def kakao_login_callback(request):
         user.set_unusable_password()
         user.save()
         login(request, user)
-        return redirect("https://seeya-archive.com/auth/nickname")
+        return redirect('https://seeya-archive.com/auth/nickname')
 
 
 @csrf_exempt
 def kakao_logout(request):
     requests.post(
-        f"https://kapi.kakao.com/v1/user/logout?target_id_type=user_id&target_id={request.user.kakao_id}",
-        headers={"Content-Type": "application/x-www-form-urlencoded",
-                 "Authorization": f"KakaoAK {KAKAO_ADMIN_KEY}"},
+        f'https://kapi.kakao.com/v1/user/logout?target_id_type=user_id&target_id={request.user.kakao_id}',
+        headers={'Content-Type': 'application/x-www-form-urlencoded',
+                 'Authorization': f'KakaoAK {KAKAO_ADMIN_KEY}'},
     )
     logout(request)
-    return redirect("https://seeya-archive.com")
+    return redirect('https://seeya-archive.com')
 
 
 def kakao_withdrawal(request):
     user = User.objects.get(pk=request.user.pk)
     requests.post(
-        f"https://kapi.kakao.com/v1/user/unlink?target_id_type=user_id&target_id={request.user.kakao_id}",
-        headers={"Content-Type": "application/x-www-form-urlencoded",
-                 "Authorization": f"KakaoAK {KAKAO_ADMIN_KEY}"},
+        f'https://kapi.kakao.com/v1/user/unlink?target_id_type=user_id&target_id={request.user.kakao_id}',
+        headers={'Content-Type': 'application/x-www-form-urlencoded',
+                 'Authorization': f'KakaoAK {KAKAO_ADMIN_KEY}'},
     )
     logout(request)
     user.delete()
-    return redirect("https://seeya-archive.com")
+    return redirect('https://seeya-archive.com')
 
 
 def make_random_nickname(kakao_id):

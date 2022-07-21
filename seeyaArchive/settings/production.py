@@ -59,3 +59,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 MEDIA_URL = 'https://%s/' % AWS_S3_CUSTOM_DOMAIN
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+
+SESSION_COOKIE_DOMAIN = '.seeya-archive.com'
+SESSION_COOKIE_NAME = 'sessionid'
+CSRF_COOKIE_DOMAIN = '.seeya-archive.com'
+CSRF_COOKIE_NAME = 'csrftoken'
