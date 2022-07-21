@@ -1,17 +1,16 @@
-import uuid
 import boto3
+import uuid
 from datetime import datetime
-
-from django.conf import settings
-from rest_framework.serializers import ModelSerializer, Serializer, SerializerMethodField
-from rest_framework.exceptions import APIException
-from .models import Review, Comment
 from accounts.models import User
-
-if settings.DEBUG == True:
+from django.conf import settings
+from rest_framework.exceptions import APIException
+from rest_framework.serializers import ModelSerializer, Serializer, SerializerMethodField
+from .models import Review, Comment
+if settings.DEBUG:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
-elif settings.DEBUG == False:
+elif not settings.DEBUG:
     from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
+
 # AWS
 AWS_ACCESS_KEY_ID = SOCIAL_OAUTH_CONFIG['MY_AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = SOCIAL_OAUTH_CONFIG['MY_AWS_SECRET_ACCESS_KEY']
@@ -38,6 +37,18 @@ class LikeUserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'nickname']
+
+
+class ReviewLikeUserSerializer(ModelSerializer):
+    like_users = LikeUserSerializer(many=True, read_only=True)
+    like_user_count = SerializerMethodField()
+
+    class Meta:
+        model = Review
+        fields = ['like_user_count', 'like_users']
+
+    def get_like_user_count(self, obj):
+        return obj.like_users.count()
 
 
 class UserSerializer(ModelSerializer):
@@ -74,7 +85,8 @@ class SeatReviewImageUploadS3Serializer(Serializer):
             image_data._set_name(str(uuid.uuid4()))
             s3r.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(Key='%s/%s-%s' % (bucket_name, current_date, image_data),
                                                            Body=image_data, ContentType='jpg')
-            image_url_list.append(AWS_S3_CUSTOM_DOMAIN + "/%s/%s-%s" % (bucket_name, current_date, image_data))
+            image_url_list.append(
+                'https://' + AWS_S3_CUSTOM_DOMAIN + '/%s/%s-%s' % (bucket_name, current_date, image_data))
         return self.to_representation(image_url_list)
 
 
@@ -86,7 +98,8 @@ class SeatReviewListSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'nickname', 'user', 'seat_area', 'artist', 'review', 'like_users', 'preview_image', 'image_url_array']
+        fields = ['id', 'nickname', 'user', 'seat_area', 'artist', 'review', 'like_users', 'preview_image',
+                  'image_url_array']
 
     def get_preview_image(self, obj):
         return obj.image_url_array[0]
