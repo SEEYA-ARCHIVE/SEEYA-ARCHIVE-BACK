@@ -1,3 +1,7 @@
+import json
+
+from django.core.exceptions import ImproperlyConfigured
+
 from .base import *
 
 secret_file = os.path.join(BASE_DIR, 'secrets.json')
@@ -18,7 +22,6 @@ def get_secret(setting):
 
 SECRET_KEY = get_secret("SECRET_KEY")
 
-
 # 카카오 로그인
 SOCIAL_OAUTH_CONFIG = {
     'MY_AWS_SECRET_ACCESS_KEY': get_secret('MY_AWS_SECRET_ACCESS_KEY'),
@@ -32,7 +35,6 @@ SOCIAL_OAUTH_CONFIG = {
 SITE_ID = 1
 
 LOGIN_REDIRECT_URL = '/'
-
 
 DEBUG = True
 
