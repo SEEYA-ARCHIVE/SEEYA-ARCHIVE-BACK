@@ -23,20 +23,14 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 ]
 
-from django.utils.deprecation import MiddlewareMixin
 
-class DisableCsrfCheck(MiddlewareMixin):
 
-    def process_request(self, req):
-        attr = '_dont_enforce_csrf_checks'
-        if not getattr(req, attr, False):
-            setattr(req, attr, True)
-            
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'seat_reviews.middleware.views.DisableCsrfCheck'
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
