@@ -27,6 +27,7 @@ SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 
 ALLOWED_HOSTS = ['localhost',
+                 '172.31.19.223',
                  get_secret('HOST'),
                  '*.seeya-archive.com',
                  'api.seeya-archive.com',
