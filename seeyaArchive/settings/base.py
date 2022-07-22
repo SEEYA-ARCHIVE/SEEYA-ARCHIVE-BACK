@@ -34,11 +34,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-SESSION_COOKIE_DOMAIN = '.seeya-archive.com'
-SESSION_COOKIE_NAME = 'sessionid'
-CSRF_COOKIE_DOMAIN = '.seeya-archive.com'
-CSRF_COOKIE_NAME = 'csrftoken'
-
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
     'https://www.seeya-archive.com',
