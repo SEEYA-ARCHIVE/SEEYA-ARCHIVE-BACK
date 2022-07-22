@@ -48,7 +48,7 @@ class ReviewViewSet(CreateModelMixin,
                     GenericViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-    authentication_classes = SessionCsrfExemptAuthentication
+    authentication_classes = [SessionCsrfExemptAuthentication]
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
