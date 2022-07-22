@@ -1,7 +1,8 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin
+from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, \
+    CreateModelMixin
 from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly
 from .serializers import SeatReviewListSerializer, SeatReviewDetailSerializer, SeatReviewCreateSerializer, \
     CommentSerializer, SeatReviewImageUploadS3Serializer, ViewComparisonSerializer, ReviewLikeUserSerializer
@@ -33,7 +34,8 @@ class ReviewImageUploadViewSet(ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
-class ReviewViewSet(RetrieveModelMixin,
+class ReviewViewSet(CreateModelMixin,
+                    RetrieveModelMixin,
                     DestroyModelMixin,
                     ListModelMixin,
                     GenericViewSet):
