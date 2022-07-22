@@ -33,7 +33,7 @@ class ReviewImageUploadViewSet(ModelViewSet):
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
-from rest_framework.authentication import SessionAuthentication
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
 
 class SessionCsrfExemptAuthentication(SessionAuthentication):
@@ -48,7 +48,7 @@ class ReviewViewSet(CreateModelMixin,
                     GenericViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-    authentication_classes = [SessionCsrfExemptAuthentication]
+    authentication_classes = (SessionCsrfExemptAuthentication, BasicAuthentication)
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
