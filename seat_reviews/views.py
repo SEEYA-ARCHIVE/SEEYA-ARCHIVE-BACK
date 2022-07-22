@@ -27,13 +27,13 @@ class IsAuthorOrReadOnly(BasePermission):
 
 
 # ViewSet
-class ReviewImageUploadViewSet(ModelViewSet):
+class ReviewImageUploadViewSet(ModelViewSet, GenericAPIView):
     queryset = Review.objects.none()
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
-class ReviewViewSet(ModelViewSet):
+class ReviewViewSet(ModelViewSet, GenericAPIView):
     queryset = Review.objects.all()
     pagination_class = Pagination
     http_method_names = ['get', 'post', 'delete', 'put', 'patch', 'options']
@@ -87,7 +87,7 @@ class ReviewViewSet(ModelViewSet):
         return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
 
 
-class CommentViewSet(ModelViewSet):
+class CommentViewSet(ModelViewSet, GenericAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
