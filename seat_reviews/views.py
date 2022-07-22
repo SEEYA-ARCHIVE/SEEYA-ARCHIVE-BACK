@@ -1,4 +1,3 @@
-from django.views.decorators.csrf import csrf_exempt
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
@@ -34,7 +33,14 @@ class ReviewImageUploadViewSet(ModelViewSet):
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
-@csrf_exempt
+from rest_framework.authentication import SessionAuthentication
+
+
+class SessionCsrfExemptAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        pass
+
+
 class ReviewViewSet(CreateModelMixin,
                     RetrieveModelMixin,
                     DestroyModelMixin,
@@ -42,6 +48,7 @@ class ReviewViewSet(CreateModelMixin,
                     GenericViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
+    authentication_classes = SessionCsrfExemptAuthentication
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
