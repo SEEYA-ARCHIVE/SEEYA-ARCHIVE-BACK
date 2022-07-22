@@ -34,12 +34,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ALLOWED_ORIGINS = [
+CORS_ALLOWED_ORIGINS = (
     'http://localhost:3000',
     'https://www.seeya-archive.com',
     'https://seeya-archive.com',
     'https://api.seeya-archive.com',
-]
+)
 
 CORS_ORIGIN_WHITELIST = (
     'http://localhost:3000',
@@ -76,7 +76,9 @@ CORS_ALLOW_HEADERS = (
     'origin',
     'user-agent',
     'x-csrftoken',
+    'csrftoken',
     'x-requested-with',
+    'set-cookie',
 )
 
 ROOT_URLCONF = 'seeyaArchive.urls'
