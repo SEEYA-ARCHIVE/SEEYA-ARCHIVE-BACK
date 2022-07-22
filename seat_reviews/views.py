@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin, \
     CreateModelMixin
-from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly
+from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly, AllowAny
 from .serializers import SeatReviewListSerializer, SeatReviewDetailSerializer, SeatReviewCreateSerializer, \
     CommentSerializer, SeatReviewImageUploadS3Serializer, ViewComparisonSerializer, ReviewLikeUserSerializer
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
@@ -33,15 +33,6 @@ class ReviewImageUploadViewSet(ModelViewSet):
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
-from django.utils.deprecation import MiddlewareMixin
-
-class DisableCsrfCheck(MiddlewareMixin):
-
-    def process_request(self, req):
-        attr = '_dont_enforce_csrf_checks'
-        if not getattr(req, attr, False):
-            setattr(req, attr, True)
-
 class ReviewViewSet(CreateModelMixin,
                     RetrieveModelMixin,
                     DestroyModelMixin,
@@ -49,6 +40,8 @@ class ReviewViewSet(CreateModelMixin,
                     GenericViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
+    permission_classes = (AllowAny,)
+
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
