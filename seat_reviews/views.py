@@ -36,7 +36,7 @@ class ReviewImageUploadViewSet(ModelViewSet):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         if self.action == 'list':
