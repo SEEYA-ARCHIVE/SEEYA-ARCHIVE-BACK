@@ -33,14 +33,6 @@ class ReviewImageUploadViewSet(ModelViewSet):
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
-
-class SessionCsrfExemptAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        pass
-
-
 class ReviewViewSet(CreateModelMixin,
                     RetrieveModelMixin,
                     DestroyModelMixin,
@@ -48,7 +40,6 @@ class ReviewViewSet(CreateModelMixin,
                     GenericViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-    authentication_classes = (SessionCsrfExemptAuthentication, BasicAuthentication)
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
