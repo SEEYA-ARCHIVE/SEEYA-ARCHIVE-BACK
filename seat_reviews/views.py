@@ -1,9 +1,9 @@
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, GenericViewSet
+from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin, ListModelMixin
 from rest_framework.permissions import SAFE_METHODS, BasePermission, IsAuthenticatedOrReadOnly
-from .serializers import SeatReviewListSerializer, SeatReviewDetailSerializer, SeatReviewCreateSerializer,\
+from .serializers import SeatReviewListSerializer, SeatReviewDetailSerializer, SeatReviewCreateSerializer, \
     CommentSerializer, SeatReviewImageUploadS3Serializer, ViewComparisonSerializer, ReviewLikeUserSerializer
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 from rest_framework.pagination import PageNumberPagination
@@ -33,9 +33,13 @@ class ReviewImageUploadViewSet(ModelViewSet):
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
-class ReviewViewSet(ModelViewSet):
+class ReviewViewSet(RetrieveModelMixin,
+                    DestroyModelMixin,
+                    ListModelMixin,
+                    GenericViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
+
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
