@@ -30,7 +30,7 @@ urlpatterns = [
     path('s3/upload/', include(review_image_router.urls)),
     # path('seat_areas/<int:seat_area_id>/', include(review_router.urls)),
     path('seat_areas/<int:seat_area_id>/reviews/<int:pk>', review_get),
-    path('seat_areas/<int:seat_area_id>/', csrf_exempt(review_post)),
+    path('seat_areas/<int:seat_area_id>/reviews', csrf_exempt(review_post)),
 
     path('reviews/<int:review_id>/likes', ReviewLikeViewSet.as_view()),
 ]
