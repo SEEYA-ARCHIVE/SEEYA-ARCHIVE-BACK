@@ -92,6 +92,19 @@ class CommentViewSet(ModelViewSet):
     def get_queryset(self):
         return Comment.objects.filter(review=self.kwargs['review_id'])
 
+    def create(self, request, *args, **kwargs):
+        session_key = self.request.session.session_key
+        session = Session.objects.get(session_key=session_key)
+        uid = session.get_decoded().get('_auth_user_id')
+        user = User.objects.get(pk=uid)
+        request.data['user'] = user.id
+        request.data['review'] = self.kwargs['review_id']
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
+
 
 class ReviewLikeViewSet(RetrieveModelMixin,
                         UpdateModelMixin,
