@@ -1,4 +1,5 @@
 from django.urls import path, include
+from django.views.decorators.csrf import csrf_exempt
 from rest_framework import routers
 from .views import CommentViewSet, ReviewViewSet, ReviewImageUploadViewSet, CompareViewSet, ReviewLikeViewSet
 
@@ -12,7 +13,7 @@ review_image_router = routers.SimpleRouter(trailing_slash=False)
 review_image_router.register('review_images', ReviewImageUploadViewSet, basename='review_image')
 
 review_router = routers.SimpleRouter(trailing_slash=False)
-review_router.register('reviews', ReviewViewSet, basename='review')
+review_router.register('reviews', csrf_exempt(ReviewViewSet), basename='review')
 
 
 urlpatterns = [

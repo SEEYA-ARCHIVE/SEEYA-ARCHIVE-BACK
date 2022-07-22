@@ -1,5 +1,3 @@
-from django.views.decorators.csrf import csrf_exempt
-from django.utils.decorators import method_decorator
 
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -88,11 +86,6 @@ class ReviewViewSet(ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, *args, **kwargs):
-        return super(ReviewViewSet, self).dispatch(*args, **kwargs)
-
 
 
 
