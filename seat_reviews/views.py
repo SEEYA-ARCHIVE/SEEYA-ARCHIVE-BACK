@@ -13,6 +13,9 @@ from .models import Review, Comment
 from concert_halls.models import SeatArea
 from accounts.models import User
 from django.contrib.sessions.models import Session
+from django.views.decorators.csrf import csrf_exempt
+
+
 
 
 # Pagination
@@ -34,12 +37,16 @@ class ReviewImageUploadViewSet(ModelViewSet):
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
-from braces.views import CsrfExemptMixin
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 
-class ReviewViewSet(CsrfExemptMixin, ModelViewSet):
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+
+    def enforce_csrf(self, request):
+        return  # To not perform the csrf check previously happening
+class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-
+    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
@@ -75,7 +82,7 @@ class ReviewViewSet(CsrfExemptMixin, ModelViewSet):
         serialized_data['next_id'] = next_id
 
         return Response(serialized_data)
-
+    @csrf_exempt
     def create(self, request, *args, **kwargs):
         session_key = self.request.session.session_key
         session = Session.objects.get(session_key=session_key)
