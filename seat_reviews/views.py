@@ -30,14 +30,13 @@ class IsAuthorOrReadOnly(BasePermission):
 class ReviewImageUploadViewSet(ModelViewSet):
     queryset = Review.objects.none()
     serializer_class = SeatReviewImageUploadS3Serializer
-    # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-
-    # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -100,8 +99,7 @@ class ReviewLikeViewSet(RetrieveModelMixin,
                         GenericAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewLikeUserSerializer
-
-    # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
