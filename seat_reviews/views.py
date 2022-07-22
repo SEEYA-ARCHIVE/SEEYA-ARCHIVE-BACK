@@ -34,7 +34,9 @@ class ReviewImageUploadViewSet(ModelViewSet):
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
-class ReviewViewSet(ModelViewSet):
+from braces.views import CsrfExemptMixin
+
+class ReviewViewSet(CsrfExemptMixin, ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
 
