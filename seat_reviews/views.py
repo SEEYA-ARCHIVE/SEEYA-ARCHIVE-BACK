@@ -46,7 +46,7 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-    authentication_classes = (CsrfExemptSessionAuthentication, BasicAuthentication)
+    authentication_classes = (CsrfExemptSessionAuthentication, )
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
