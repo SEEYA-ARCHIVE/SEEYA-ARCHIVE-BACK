@@ -19,12 +19,13 @@ review_get = ReviewViewSet.as_view({
     'get': 'retrieve',
 })
 
-review_list = ReviewViewSet.as_view({
-    'get': 'list',
-})
+# review_list = ReviewViewSet.as_view({
+#
+# })
 
-review_post = ReviewViewSet.as_view({
+review_list_create = ReviewViewSet.as_view({
     'post':'create',
+    'get': 'list',
 })
 
 
@@ -33,10 +34,9 @@ urlpatterns = [
     path('', include(compare_router.urls)),
     path('s3/upload/', include(review_image_router.urls)),
     # path('seat_areas/<int:seat_area_id>/', include(review_router.urls)),
-    path('seat_areas/<int:seat_area_id>/reviews', review_list),
 
     path('seat_areas/<int:seat_area_id>/reviews/<int:pk>', review_get),
-    path('seat_areas/<int:seat_area_id>/reviews', csrf_exempt(review_post)),
+    path('seat_areas/<int:seat_area_id>/reviews', csrf_exempt(review_list_create)),
 
     path('reviews/<int:review_id>/likes', ReviewLikeViewSet.as_view()),
 ]
