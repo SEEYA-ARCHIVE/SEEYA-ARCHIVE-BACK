@@ -50,8 +50,11 @@ class SetNicknameViewSet(RetrieveModelMixin,
 
     def get_object(self):
         session_key = self.request.session.session_key
+        print(session_key)
         session = Session.objects.get(session_key=session_key)
+        print(session)
         uid = session.get_decoded().get('_auth_user_id')
+        print(uid)
         user = User.objects.get(pk=uid)
         return user
 
