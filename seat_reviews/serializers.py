@@ -6,6 +6,7 @@ from django.conf import settings
 from rest_framework.exceptions import APIException
 from rest_framework.serializers import ModelSerializer, Serializer, SerializerMethodField
 from .models import Review, Comment
+
 if settings.DEBUG:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
 elif not settings.DEBUG:
@@ -55,13 +56,14 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'email', 'kakao_id', 'nickname']
+        read_only_fields = ['id']
 
 
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['review', 'user', 'comment', 'create_at', 'update_at']
-        read_only_fields = ['id']
+        fields = ['id', 'review', 'user', 'comment', 'create_at', 'update_at']
+        read_only_fields = ['id', 'user']
 
 
 class SeatReviewImageUploadS3Serializer(Serializer):
@@ -86,7 +88,8 @@ class SeatReviewImageUploadS3Serializer(Serializer):
             image_data._set_name(str(uuid.uuid4()))
             s3r.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(Key='%s/%s-%s' % (bucket_name, current_date, image_data),
                                                            Body=image_data, ContentType='jpg')
-            image_url_list.append('https://' + AWS_S3_CUSTOM_DOMAIN + '/%s/%s-%s' % (bucket_name, current_date, image_data))
+            image_url_list.append(
+                'https://' + AWS_S3_CUSTOM_DOMAIN + '/%s/%s-%s' % (bucket_name, current_date, image_data))
         return self.to_representation(image_url_list)
 
 
@@ -98,8 +101,9 @@ class SeatReviewListSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['nickname', 'user', 'seat_area', 'review', 'like_users', 'preview_image', 'image_url_array']
-        read_only_fields = ['id']
+        fields = ['id', 'seat_area', 'user', 'nickname', 'review', 'like_users', 'preview_image',
+                  'image_url_array']
+        read_only_fields = ['id', 'seat_area', 'user']
 
     def get_preview_image(self, obj):
         return obj.image_url_array[0]
@@ -117,8 +121,7 @@ class SeatReviewListSerializer(ModelSerializer):
 class SeatReviewCreateSerializer(ModelSerializer):
     class Meta:
         model = Review
-        fields = ['user', 'image_url_array', 'seat_area', 'review', 'create_at']
-        read_only_fields = ['id']
+        fields = ['id', 'seat_area', 'user', 'image_url_array', 'review', 'create_at']
 
 
 class SeatReviewDetailSerializer(ModelSerializer):
@@ -130,8 +133,9 @@ class SeatReviewDetailSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'user', 'concert_hall_name', 'image_url_array', 'create_at',
-                  'update_at', 'seat_area', 'review', 'comments', 'like_users']
+        fields = ['id', 'user', 'seat_area', 'concert_hall_name', 'image_url_array', 'create_at',
+                  'update_at', 'review', 'comments', 'like_users']
+        read_only_fields = ['id', 'user', 'seat_area']
 
     def get_seat_area(self, obj):
         return obj.seat_area.area
@@ -151,6 +155,7 @@ class ViewComparisonSerializer(ModelSerializer):
         model = Review
         fields = ['id', 'user_nickname', 'thumbnail_image', 'seat_area_name', 'review',
                   'create_at', 'count_like_users', 'count_comments']
+        read_only_fields = ['id']
 
     def get_count_like_users(self, obj):
         return obj.like_users.count()
