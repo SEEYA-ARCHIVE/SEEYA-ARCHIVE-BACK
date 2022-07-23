@@ -13,7 +13,7 @@ from .models import Review, Comment
 from concert_halls.models import SeatArea
 from accounts.models import User
 from django.contrib.sessions.models import Session
-
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -46,7 +46,7 @@ class CsrfExemptSessionAuthentication(SessionAuthentication):
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
-    authentication_classes = (CsrfExemptSessionAuthentication, )
+    authentication_classes = (CsrfExemptSessionAuthentication,BasicAuthentication )
 
     # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
