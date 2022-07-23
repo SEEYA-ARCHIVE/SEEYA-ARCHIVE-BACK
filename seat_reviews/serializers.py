@@ -122,6 +122,7 @@ class SeatReviewCreateSerializer(ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'seat_area', 'user', 'image_url_array', 'review', 'create_at']
+        read_only_fields = ['id', 'seat_area', 'user']
 
 
 class SeatReviewDetailSerializer(ModelSerializer):
