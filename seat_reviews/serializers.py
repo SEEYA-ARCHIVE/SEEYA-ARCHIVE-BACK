@@ -60,7 +60,8 @@ class UserSerializer(ModelSerializer):
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'review', 'user', 'comment', 'create_at', 'update_at']
+        fields = ['review', 'user', 'comment', 'create_at', 'update_at']
+        read_only_fields = ['id']
 
 
 class SeatReviewImageUploadS3Serializer(Serializer):
@@ -97,7 +98,8 @@ class SeatReviewListSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['id', 'nickname', 'user', 'seat_area', 'review', 'like_users', 'preview_image', 'image_url_array']
+        fields = ['nickname', 'user', 'seat_area', 'review', 'like_users', 'preview_image', 'image_url_array']
+        read_only_fields = ['id']
 
     def get_preview_image(self, obj):
         return obj.image_url_array[0]
@@ -115,7 +117,8 @@ class SeatReviewListSerializer(ModelSerializer):
 class SeatReviewCreateSerializer(ModelSerializer):
     class Meta:
         model = Review
-        fields = ['id', 'user', 'image_url_array', 'seat_area', 'review', 'create_at']
+        fields = ['user', 'image_url_array', 'seat_area', 'review', 'create_at']
+        read_only_fields = ['id']
 
 
 class SeatReviewDetailSerializer(ModelSerializer):
