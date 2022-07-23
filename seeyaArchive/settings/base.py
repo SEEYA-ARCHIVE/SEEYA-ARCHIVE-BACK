@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 ]
 
+
+
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
