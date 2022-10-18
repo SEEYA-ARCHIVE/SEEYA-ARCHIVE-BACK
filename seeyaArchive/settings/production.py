@@ -4,7 +4,7 @@ DEBUG = False
 
 
 def get_secret(secret_name):
-    with open(os.path.join(BASE_DIR, secret_name)) as file:
+    with open(os.path.join("SEEYA-ARCHIVE-BACK", secret_name)) as file:
         secret = file.read()
         secret = secret.rstrip().lstrip()
         return secret
