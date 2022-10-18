@@ -1,13 +1,15 @@
 from .base import *
+from dotenv import load_dotenv
 
 DEBUG = False
 
 
+load_dotenv(".env")
+
+
 def get_secret(secret_name):
-    with open(secret_name) as file:
-        secret = file.read()
-        secret = secret.rstrip().lstrip()
-        return secret
+    secret = os.getenv(secret_name)
+    return secret
 
 
 SECRET_KEY = get_secret(".env")
