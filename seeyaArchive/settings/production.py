@@ -12,7 +12,7 @@ def get_secret(secret_name):
     return secret
 
 
-SECRET_KEY = get_secret(".env")
+SECRET_KEY = get_secret("SECRET_KEY")
 
 # 카카오 로그인
 SOCIAL_OAUTH_CONFIG = {
@@ -51,7 +51,7 @@ AWS_ACCESS_KEY_ID = get_secret("MY_AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = get_secret("MY_AWS_SECRET_ACCESS_KEY")
 
 AWS_REGION = "ap-northeast-2"
-AWS_STORAGE_BUCKET_NAME = "7th-team2-seeya-archive"
+AWS_STORAGE_BUCKET_NAME = "seeya-archive"
 AWS_S3_CUSTOM_DOMAIN = "%s.s3.%s.amazonaws.com" % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
 STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
