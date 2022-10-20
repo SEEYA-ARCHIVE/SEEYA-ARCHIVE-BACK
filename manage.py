@@ -7,17 +7,7 @@ import sys
 def main():
     """Run administrative tasks."""
 
-    ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
-
-    if ENVIRONMENT == "local":
-        os.environ.setdefault(
-            "DJANGO_SETTINGS_MODULE", "seeyaArchive.settings.development"
-        )
-    elif ENVIRONMENT == "prod":
-        os.environ.setdefault(
-            "DJANGO_SETTINGS_MODULE", "seeyaArchive.settings.production"
-        )
-
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "seeyaArchive.settings.development")
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
