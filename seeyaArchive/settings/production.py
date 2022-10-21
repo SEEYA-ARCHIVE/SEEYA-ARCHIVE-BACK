@@ -1,6 +1,5 @@
-import os
-
 from .base import *
+from django.http import HttpResponse
 
 
 ALLOWED_HOSTS = [
@@ -76,3 +75,20 @@ SESSION_COOKIE_DOMAIN = os.getenv("DOMAIN")
 SESSION_COOKIE_NAME = "sessionid"
 CSRF_COOKIE_DOMAIN = os.getenv("DOMAIN")
 CSRF_COOKIE_NAME = "csrftoken"
+
+
+# healthCheck 용 미들웨어
+class HealthCheckMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.path == "/ping":
+            return HttpResponse("pong")
+        response = self.get_response(request)
+        return response
+
+
+MIDDLEWARE += [
+    "project.middleware.HealthCheckMiddleware",
+]
