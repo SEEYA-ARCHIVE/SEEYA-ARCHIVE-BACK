@@ -1,5 +1,4 @@
 from .base import *
-from django.http import HttpResponse
 
 ALLOWED_HOSTS = [
     "localhost",
@@ -74,18 +73,3 @@ SESSION_COOKIE_DOMAIN = os.getenv("DOMAIN")
 SESSION_COOKIE_NAME = "sessionid"
 CSRF_COOKIE_DOMAIN = os.getenv("DOMAIN")
 CSRF_COOKIE_NAME = "csrftoken"
-
-
-# healthCheck 용 미들웨어
-def HealthCheckMiddleware(get_response):
-    def middleware(request):
-        if request.path == "/health":
-            return HttpResponse("Healthy")
-        return get_response(request)
-
-    return middleware
-
-
-MIDDLEWARE += [
-    "seeyaArchive.settings.production.HealthCheckMiddleware",
-]
