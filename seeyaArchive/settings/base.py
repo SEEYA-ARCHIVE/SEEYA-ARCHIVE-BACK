@@ -34,7 +34,6 @@ MIDDLEWARE = [
 
 # .env 파일 환경변수로 불러오로
 load_dotenv(".env")
-DEBUG = os.getenv("DEBUG", True)
 
 
 # Application definition
