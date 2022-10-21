@@ -90,5 +90,5 @@ class HealthCheckMiddleware:
 
 
 MIDDLEWARE += [
-    "project.middleware.HealthCheckMiddleware",
+    "seeyaArchive.settings.production.HealthCheckMiddleware",
 ]
