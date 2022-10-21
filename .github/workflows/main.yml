@@ -18,7 +18,7 @@ jobs:
       - name: Login to ECR
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.aws_account_number }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          registry: ${{ secrets.aws_account_number }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.REGISTRY }}
           username: ${{ secrets.MY_AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.MY_AWS_SECRET_ACCESS_KEY }}
         env:
@@ -42,11 +42,9 @@ jobs:
       - name: Login to ECR
         uses: docker/login-action@v2
         with:
-          registry: ${{ secrets.aws_account_number }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+          registry: ${{ secrets.aws_account_number }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.REGISTRY }}
           username: ${{ secrets.MY_AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.MY_AWS_SECRET_ACCESS_KEY }}
-        env:
-          AWS_ACCOUNT_IDS: ${{ secrets.REGISTRY }}
 
       # SSH into the server
       - name: executing remote ssh commands using ssh key
@@ -77,11 +75,6 @@ jobs:
           echo DB_PORT="${{ secrets.DB_PORT }}" >> .env
 
 
-
-
-
-
-
           docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} rm -f seeyaarchive-server
-          docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} run -d --name seeyaarchive-server -p 80:8000 --env-file .env seeyaarchive-server:${{ github.sha }}
+          docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} run -d --name seeyaarchive-server -p 80:8000 --env-file .env ${{ secrets.REGISTRY }}/seeyaarchive-server:${{ github.sha }}
         shell: bash
