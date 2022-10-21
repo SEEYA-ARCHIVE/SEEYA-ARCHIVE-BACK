@@ -21,8 +21,6 @@ jobs:
           registry: ${{ secrets.aws_account_number }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.REGISTRY }}
           username: ${{ secrets.MY_AWS_ACCESS_KEY_ID }}
           password: ${{ secrets.MY_AWS_SECRET_ACCESS_KEY }}
-        env:
-          AWS_ACCOUNT_IDS: ${{ secrets.REGISTRY }}
       # Build the docker image and push it.
       - name: Build image
         uses: docker/build-push-action@v2
