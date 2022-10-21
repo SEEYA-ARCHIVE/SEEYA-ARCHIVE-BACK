@@ -1,3 +1,5 @@
+import os
+
 from .base import *
 
 
@@ -6,6 +8,7 @@ ALLOWED_HOSTS = [
     os.getenv("SERVER_HOST"),
     os.getenv("DOMAIN_GENERAL"),
     os.getenv("DOMAIN_API"),
+    os.getenv("DOMAIN"),
 ]
 
 SESSION_COOKIE_DOMAIN = ".seeya-archive.com"
