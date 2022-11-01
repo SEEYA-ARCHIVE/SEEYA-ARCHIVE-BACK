@@ -72,5 +72,5 @@ jobs:
 
 
           docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} rm -f seeyaarchive-server
-          docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} run -d --name seeyaarchive-server -p 80:8000 --env-file .env ${{ secrets.REGISTRY }}/seeyaarchive-server:${{ github.sha }}
+          docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} run -d --name seeyaarchive-server -p 80:8000 --env-file .env seeyaarchive-server:${{ github.sha }}
         shell: bash
