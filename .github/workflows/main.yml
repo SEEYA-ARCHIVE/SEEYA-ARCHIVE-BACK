@@ -3,7 +3,7 @@ name: Build API and Deploy
 on:
   push:
     branches:
-      - "feature/infrastructure-settings"
+      - "develop"
 
 jobs:
   example-job:
