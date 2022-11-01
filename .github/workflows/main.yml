@@ -71,6 +71,6 @@ jobs:
           echo DB_PORT="${{ secrets.DB_PORT }}" >> .env
 
 
-          docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} rm -f seeyaarchive-server
+          docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} rm -f ${{ secrets.registry_user }}/seeyaarchive-server
           docker --tlsverify --tlscacert=ca.pem --tlscert=cert.pem --tlskey=key.pem -H=${{ secrets.SERVER_HOST }}:${{ secrets.DOCKER_PORT }} run -d --name seeyaarchive-server -p 80:8000 --env-file .env ${{ secrets.registry_user }}/seeyaarchive-server:${{ github.sha }}
         shell: bash
