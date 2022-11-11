@@ -31,7 +31,7 @@ class IsAuthorOrReadOnly(BasePermission):
 class ReviewImageUploadViewSet(ModelViewSet):
     queryset = Review.objects.none()
     serializer_class = SeatReviewImageUploadS3Serializer
-    # permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
 # 이미지 제외한 리뷰 CRUD
