@@ -9,10 +9,11 @@ from .models import Review, Comment
 
 if settings.DEBUG:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
-elif not settings.DEBUG:
+else:
     from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
 
-# AWS
+## AWS
+
 AWS_ACCESS_KEY_ID = SOCIAL_OAUTH_CONFIG['MY_AWS_ACCESS_KEY_ID']
 AWS_SECRET_ACCESS_KEY = SOCIAL_OAUTH_CONFIG['MY_AWS_SECRET_ACCESS_KEY']
 AWS_REGION = 'ap-northeast-2'
@@ -20,7 +21,8 @@ AWS_STORAGE_BUCKET_NAME = '7th-team2-seeya-archive'
 AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
 
 
-# Exception
+## Exception
+
 class ImageRequiredException(APIException):
     status_code = 204
     default_detail = 'Image is Required'
@@ -33,7 +35,8 @@ class TooManyImagesException(APIException):
     default_code = 'RequestEntityTooLarge'
 
 
-# Serializer
+## Serializer
+
 class LikeUserSerializer(ModelSerializer):
     class Meta:
         model = User
@@ -68,8 +71,8 @@ class CommentSerializer(ModelSerializer):
 
 class SeatReviewImageUploadS3Serializer(Serializer):
     def to_representation(self, image_url_list):
-        imag_dict = {'image_urls': image_url_list}
-        return imag_dict
+        image_dict = {'image_urls': image_url_list}  # 수정 필요
+        return image_dict
 
     def create(self, validate_data):
         images_data = self.context['request'].FILES
@@ -85,9 +88,11 @@ class SeatReviewImageUploadS3Serializer(Serializer):
 
         image_url_list = []
         for image_data in images_data.getlist('image'):
-            image_data._set_name(str(uuid.uuid4()))
+            image_data._set_name(str(uuid.uuid4())) # use uuid as temporary name
+            # s3에 이미지 저장
             s3r.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(Key='%s/%s-%s' % (bucket_name, current_date, image_data),
                                                            Body=image_data, ContentType='jpg')
+            # 이미지 url 리스트 생성
             image_url_list.append(
                 'https://' + AWS_S3_CUSTOM_DOMAIN + '/%s/%s-%s' % (bucket_name, current_date, image_data))
         return self.to_representation(image_url_list)
@@ -105,7 +110,7 @@ class SeatReviewListSerializer(ModelSerializer):
                   'image_url_array']
         read_only_fields = ['id']
 
-    def get_preview_image(self, obj):
+    def get_preview_image(self, obj): # DB상 첫 번째 이미지가 preview image
         return obj.image_url_array[0]
 
     def get_image_url_array(self, obj):
@@ -135,7 +140,7 @@ class SeatReviewDetailSerializer(ModelSerializer):
     class Meta:
         model = Review
         fields = ['id', 'user', 'seat_area', 'concert_hall_name', 'image_url_array', 'create_at',
-                  'update_at', 'review', 'comments', 'like_users']
+                  'update_at', 'review', 'review_comments', 'like_users']
         read_only_fields = ['id']
 
     def get_seat_area(self, obj):
@@ -162,8 +167,7 @@ class ViewComparisonSerializer(ModelSerializer):
         return obj.like_users.count()
 
     def get_thumbnail_image(self, obj):
-        if len(obj.image_url_array) > 0:
-            return obj.image_url_array[0]
+        return obj.image_url_array[0]
 
     def get_user_nickname(self, obj):
         return obj.user.nickname

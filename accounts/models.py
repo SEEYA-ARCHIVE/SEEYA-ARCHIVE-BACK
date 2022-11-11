@@ -36,6 +36,7 @@ class UserManager(BaseUserManager):
 class User(AbstractUser):
     LOGIN_EMAIL = 'email'
     LOGIN_KAKAO = 'kakao'
+    # twitter model 따로 만들 예정
     LOGIN_TWITTER = 'twitter'
     LOGIN_CHOICES = (
         (LOGIN_TWITTER, 'Twitter'),
@@ -47,7 +48,7 @@ class User(AbstractUser):
         ('female', 'Female'),
         ('other', 'Other'),
     )
-    kakao_id = models.CharField(max_length=128, null=False, unique=True)
+    kakao_id = models.CharField(max_length=128, null=False, primary_key=True)
     nickname = models.CharField(max_length=128, null=True)
     account_name = models.CharField(max_length=128, null=True)
     profile_image_url = models.TextField(null=True)
@@ -57,7 +58,7 @@ class User(AbstractUser):
     birthday_type = models.CharField(max_length=8, null=True)
     birthday = models.CharField(max_length=8, null=True)
     phone_number = models.CharField(max_length=128, null=True)
-    login_method = models.CharField(
+    login_method = models.CharField(  # twitter model이 따로 생성되면 지워질 필드
         max_length=16, choices=LOGIN_CHOICES, default=LOGIN_EMAIL
     )
     is_active = models.BooleanField(default=True)

@@ -6,10 +6,9 @@ from django.contrib.auth import login, logout
 from django.db.models import Q
 if settings.DEBUG:
     from seeyaArchive.settings.development import SOCIAL_OAUTH_CONFIG
-elif not settings.DEBUG:
+else:
     from seeyaArchive.settings.production import SOCIAL_OAUTH_CONFIG
-import random
-import requests
+import random, requests
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
@@ -25,16 +24,19 @@ KAKAO_SECRET_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_SECRET_KEY']
 KAKAO_ADMIN_KEY = SOCIAL_OAUTH_CONFIG['KAKAO_ADMIN_KEY']
 
 
-# Nickname
+## Nickname
+
+# nickname 중복 확인
 class CheckNicknameDuplicateViewSet(APIView):
     def get(self, request):
-        users = User.objects.filter(~Q(id=self.request.user.pk) &
+        users = User.objects.filter(~Q(id=self.request.user.pk) &  # 임의의 별명이 설정되어있는 상태이므로 로그인한 유저 제외
                                     Q(nickname=self.request.GET.get('nickname')))
         if users:
             return Response(data=False, status=HTTP_400_BAD_REQUEST)
         return Response(data=True, status=HTTP_200_OK)
 
 
+# nickname 설정
 class SetNicknameViewSet(RetrieveModelMixin,
                          UpdateModelMixin,
                          GenericAPIView):
@@ -48,7 +50,7 @@ class SetNicknameViewSet(RetrieveModelMixin,
         kwargs['partial'] = True
         return self.partial_update(request, *args, **kwargs)
 
-    def get_object(self):
+    def get_object(self):  # session에서 login한 user 가져옴
         session_key = self.request.session.session_key
         session = Session.objects.get(session_key=session_key)
         uid = session.get_decoded().get('_auth_user_id')
@@ -56,7 +58,8 @@ class SetNicknameViewSet(RetrieveModelMixin,
         return user
 
 
-# ViewSet
+## ViewSet
+
 class MyPageViewSet(RetrieveModelMixin,
                     GenericAPIView):
     queryset = User.objects.all()
@@ -73,7 +76,8 @@ class MyPageViewSet(RetrieveModelMixin,
         return user
 
 
-# Kakao
+## Kakao
+
 @api_view(['GET'])
 def kakao_login(request):
     return redirect(
@@ -95,10 +99,10 @@ def kakao_login_callback(request):
         headers={'Content-Type': 'application/x-www-form-urlencoded',
                  'Authorization': f'Bearer {access_token}'},
     )
-    token_info = requests.get(
-        'https://kapi.kakao.com/v1/user/access_token_info',
-        headers={'Authorization': f'Bearer {access_token}', },
-    )
+    # token_info = requests.get(
+    #     'https://kapi.kakao.com/v1/user/access_token_info',
+    #     headers={'Authorization': f'Bearer {access_token}'},
+    # )
     json_response = profile_request.json()
     kakao_account = json_response.get('kakao_account')
     kakao_id = json_response.get('id')
@@ -115,15 +119,17 @@ def kakao_login_callback(request):
     if profile is not None:
         profile_image_url = profile.get('profile_image_url')
     user = User.objects.filter(kakao_id=kakao_id).first()
+    # 이미 회원인 유저는 로그인
     if user is not None:
         login(request, user)
         return redirect('https://seeya-archive.com')
+    # 새로 가입한 유저 모델에 저장 후 로그인 및 닉네임 설정
     else:
         user = User.objects.create_user(
             kakao_id=kakao_id,
             email=email,
             username=kakao_id,
-            nickname=make_random_nickname(kakao_id),
+            nickname=make_random_nickname(kakao_id), # 닉네임은 임의로 생성하여 저장
             profile_image_url=profile_image_url,
             gender=gender,
             age_range=age_range,
@@ -163,6 +169,7 @@ def kakao_withdrawal(request):
     return redirect('https://seeya-archive.com')
 
 
+# 닉네임 설정 전에 랜덤으로 닉네임을 지어주는 함수
 def make_random_nickname(kakao_id):
     random_nickname = str(kakao_id)
     with open('accounts/words.txt', encoding='utf-8') as f:
