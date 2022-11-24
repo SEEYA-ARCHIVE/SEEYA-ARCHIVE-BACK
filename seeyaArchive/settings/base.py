@@ -1,138 +1,126 @@
-import json
 import os
-
-from django.core.exceptions import ImproperlyConfigured
+from dotenv import load_dotenv
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'seat_reviews',
-    'concert_halls',
-    'accounts',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "seat_reviews",
+    "concert_halls",
+    "accounts",
     # 'sorl.thumbnail',
-    'drf_yasg',
-    'corsheaders',
-    'rest_framework',
-    'django.contrib.sites',
+    "drf_yasg",
+    "corsheaders",
+    "rest_framework",
+    "django.contrib.sites",
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-SESSION_COOKIE_DOMAIN = '.seeya-archive.com'
-SESSION_COOKIE_NAME = 'sessionid'
-CSRF_COOKIE_DOMAIN = '.seeya-archive.com'
-CSRF_COOKIE_NAME = 'csrftoken'
-
-CORS_ORIGIN_WHITELIST = (
-    'http://localhost:3000',
-    'https://www.seeya-archive.com',
-    'https://seeya-archive.com',
-    'https://api.seeya-archive.com',
-)
-
-CSRF_TRUSTED_ORIGINS = (
-    'http://localhost:3000',
-    'https://www.seeya-archive.com',
-    'https://seeya-archive.com',
-    'https://api.seeya-archive.com',
-)
+# .env 파일 환경변수로 불러오로
+load_dotenv(".env")
 
 
-CORS_ALLOW_CREDENTIALS = True
+# Application definition
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-CORS_ALLOW_METHODS = (
-    'DELETE',
-    'GET',
-    'OPTIONS',
-    'PATCH',
-    'POST',
-    'PUT',
-)
+# 카카오 로그인
+SOCIAL_OAUTH_CONFIG = {
+    "MY_AWS_SECRET_ACCESS_KEY": os.getenv("MY_AWS_SECRET_ACCESS_KEY"),
+    "MY_AWS_ACCESS_KEY_ID": os.getenv("MY_AWS_ACCESS_KEY_ID"),
+    "KAKAO_REST_API_KEY": os.getenv("KAKAO_REST_API_KEY"),
+    "KAKAO_REDIRECT_URI": os.getenv("KAKAO_REDIRECT_URI"),
+    "KAKAO_SECRET_KEY": os.getenv("KAKAO_SECRET_KEY"),
+    "KAKAO_ADMIN_KEY": os.getenv("KAKAO_ADMIN_KEY"),
+}
 
-CORS_ALLOW_HEADERS = (
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-)
+SITE_ID = 1
+LOGIN_REDIRECT_URL = "/"
 
-ROOT_URLCONF = 'seeyaArchive.urls'
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql_psycopg2",
+        "NAME": os.getenv("DB_NAME"),
+        "USER": os.getenv("DB_USER"),
+        "PASSWORD": os.getenv("DB_PASSWORD"),
+        "HOST": os.getenv("DB_HOST"),
+        "PORT": os.getenv("DB_PORT"),
+    }
+}
+
+
+ROOT_URLCONF = "seeyaArchive.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'seeyaArchive.wsgi.application'
+WSGI_APPLICATION = "seeyaArchive.wsgi.application"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
 REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': (
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
-        'djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer',
+    "DEFAULT_RENDERER_CLASSES": (
+        "djangorestframework_camel_case.render.CamelCaseJSONRenderer",
+        "djangorestframework_camel_case.render.CamelCaseBrowsableAPIRenderer",
     ),
-    'DEFAULT_PARSER_CLASSES': (
-        'djangorestframework_camel_case.parser.CamelCaseFormParser',
-        'djangorestframework_camel_case.parser.CamelCaseMultiPartParser',
-        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
+    "DEFAULT_PARSER_CLASSES": (
+        "djangorestframework_camel_case.parser.CamelCaseFormParser",
+        "djangorestframework_camel_case.parser.CamelCaseMultiPartParser",
+        "djangorestframework_camel_case.parser.CamelCaseJSONParser",
     ),
 }
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'Asia/Seoul'
+TIME_ZONE = "Asia/Seoul"
 
 USE_I18N = True
 
@@ -142,6 +130,6 @@ USE_TZ = True
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = "accounts.User"

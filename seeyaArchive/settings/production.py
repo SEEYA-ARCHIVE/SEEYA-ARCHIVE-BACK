@@ -1,66 +1,77 @@
 from .base import *
 
-DEBUG = False
+DEBUG = True
+
+ALLOWED_HOSTS = [
+    "localhost",
+    os.getenv("SERVER_HOST"),
+    os.getenv("DOMAIN_GENERAL"),
+    os.getenv("DOMAIN_API"),
+    os.getenv("DOMAIN"),
+]
+
+SESSION_COOKIE_DOMAIN = ".seeya-archive.com"
+SESSION_COOKIE_NAME = "sessionid"
+CSRF_COOKIE_DOMAIN = ".seeya-archive.com"
+CSRF_COOKIE_NAME = "csrftoken"
+
+CORS_ORIGIN_WHITELIST = (
+    os.getenv("DOMAIN_SCHEME"),
+    os.getenv("DOMAIN_API_SCHEME"),
+    os.getenv("DOMAIN_WWW_SCHEME"),
+    "http://localhost:3000",
+)
+
+CSRF_TRUSTED_ORIGINS = (
+    os.getenv("DOMAIN_SCHEME"),
+    os.getenv("DOMAIN_API_SCHEME"),
+    os.getenv("DOMAIN_WWW_SCHEME"),
+    "http://localhost:3000",
+)
 
 
-def get_secret(secret_name):
-    with open('/run/secrets/' + secret_name) as file:
-        secret = file.read()
-        secret = secret.rstrip().lstrip()
-        return secret
+CORS_ALLOW_CREDENTIALS = True
 
+CORS_ALLOW_METHODS = (
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+)
 
-SECRET_KEY = get_secret("SECRET_KEY")
+CORS_ALLOW_HEADERS = (
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+)
 
-# 카카오 로그인
-SOCIAL_OAUTH_CONFIG = {
-    'MY_AWS_SECRET_ACCESS_KEY': get_secret('MY_AWS_SECRET_ACCESS_KEY'),
-    'MY_AWS_ACCESS_KEY_ID': get_secret('MY_AWS_ACCESS_KEY_ID'),
-    'KAKAO_REST_API_KEY': get_secret('KAKAO_REST_API_KEY'),
-    'KAKAO_REDIRECT_URI': get_secret('KAKAO_REDIRECT_URI'),
-    'KAKAO_SECRET_KEY': get_secret('KAKAO_SECRET_KEY'),
-    'KAKAO_ADMIN_KEY': get_secret('KAKAO_ADMIN_KEY'),
-}
-
-SITE_ID = 1
-
-LOGIN_REDIRECT_URL = '/'
-
-ALLOWED_HOSTS = ['localhost',
-                 get_secret('HOST'),
-                 '*.seeya-archive.com',
-                 'api.seeya-archive.com',
-                 ]
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': get_secret('DB_NAME'),
-        'USER': get_secret('DB_USER'),
-        'PASSWORD': get_secret('DB_PASSWORD'),
-        'HOST': get_secret('DB_HOST'),
-        'PORT': get_secret('DB_PORT'),
-    }
-}
 
 # S3 설정을 위한 변수
-AWS_ACCESS_KEY_ID = get_secret("MY_AWS_ACCESS_KEY_ID")
-AWS_SECRET_ACCESS_KEY = get_secret("MY_AWS_SECRET_ACCESS_KEY")
+AWS_ACCESS_KEY_ID = os.getenv("MY_AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("MY_AWS_SECRET_ACCESS_KEY")
+AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+AWS_REGION = os.getenv("AWS_REGION")
 
-AWS_REGION = 'ap-northeast-2'
-AWS_STORAGE_BUCKET_NAME = '7th-team2-seeya-archive'
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (
-    AWS_STORAGE_BUCKET_NAME, AWS_REGION)
-STATIC_URL = 'https://%s/' % AWS_S3_CUSTOM_DOMAIN
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+AWS_S3_CUSTOM_DOMAIN = "%s.s3.%s.amazonaws.com" % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
+STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
+STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = "/static/"
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-MEDIA_URL = 'https://%s/' % AWS_S3_CUSTOM_DOMAIN
+DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+
+MEDIA_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
-SESSION_COOKIE_DOMAIN = '.seeya-archive.com'
-SESSION_COOKIE_NAME = 'sessionid'
-CSRF_COOKIE_DOMAIN = '.seeya-archive.com'
-CSRF_COOKIE_NAME = 'csrftoken'
+SESSION_COOKIE_DOMAIN = os.getenv("DOMAIN")
+SESSION_COOKIE_NAME = "sessionid"
+CSRF_COOKIE_DOMAIN = os.getenv("DOMAIN")
+CSRF_COOKIE_NAME = "csrftoken"
