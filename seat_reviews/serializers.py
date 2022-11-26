@@ -28,14 +28,14 @@ AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME, AWS_
 
 class ImageRequiredException(APIException):
     status_code = 204
-    default_detail = 'Image is Required'
-    default_code = 'NoContent'
+    default_detail = "Image is Required"
+    default_code = "NoContent"
 
 
 class TooManyImagesException(APIException):
     status_code = 413
-    default_detail = 'Too Many Images. Max Size is 5'
-    default_code = 'RequestEntityTooLarge'
+    default_detail = "Too Many Images. Max Size is 5"
+    default_code = "RequestEntityTooLarge"
 
 
 ## Serializer
@@ -43,7 +43,7 @@ class TooManyImagesException(APIException):
 class LikeUserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'nickname']
+        fields = ["id", "nickname"]
 
 
 class ReviewLikeUserSerializer(ModelSerializer):
@@ -52,7 +52,7 @@ class ReviewLikeUserSerializer(ModelSerializer):
 
     class Meta:
         model = Review
-        fields = ['like_user_count', 'like_users']
+        fields = ["like_user_count", "like_users"]
 
     def get_like_user_count(self, obj):
         return obj.like_users.count()
@@ -61,15 +61,15 @@ class ReviewLikeUserSerializer(ModelSerializer):
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'email', 'kakao_id', 'nickname']
-        read_only_fields = ['id']
+        fields = ["id", "email", "kakao_id", "nickname"]
+        read_only_fields = ["id"]
 
 
 class CommentSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'review', 'user', 'comment', 'create_at', 'update_at']
-        read_only_fields = ['id']
+        fields = ["id", "review", "user", "comment", "create_at", "update_at"]
+        read_only_fields = ["id"]
 
 
 class SeatReviewImageUploadS3Serializer(Serializer):
@@ -78,11 +78,11 @@ class SeatReviewImageUploadS3Serializer(Serializer):
         return image_dict
 
     def create(self, validate_data):
-        images_data = self.context['request'].FILES
+        images_data = self.context["request"].FILES
 
-        if len(images_data.getlist('image')) > 5:
+        if len(images_data.getlist("image")) > 5:
             raise TooManyImagesException
-        if len(images_data.getlist('image')) == 0:
+        if len(images_data.getlist("image")) == 0:
             raise ImageRequiredException
 
         s3r = boto3.resource(
@@ -94,7 +94,7 @@ class SeatReviewImageUploadS3Serializer(Serializer):
         current_date = datetime.now().strftime('%Y_%m_%d-%H:%M:%S')
 
         image_url_list = []
-        for image_data in images_data.getlist('image'):
+        for image_data in images_data.getlist("image"):
             image_data._set_name(str(uuid.uuid4()))
             s3r.Bucket(AWS_STORAGE_BUCKET_NAME).put_object(
                 Key='%s/%s-%s' % (bucket_name, current_date, image_data),
@@ -186,8 +186,8 @@ class SeatReviewDetailSerializer(ModelSerializer):
 
 
 class ViewComparisonSerializer(ModelSerializer):
-    count_like_users = SerializerMethodField(source='like_users')
-    thumbnail_image = SerializerMethodField(source='image_url_array')
+    count_like_users = SerializerMethodField(source="like_users")
+    thumbnail_image = SerializerMethodField(source="image_url_array")
     user_nickname = SerializerMethodField()
     count_comments = SerializerMethodField()
     seat_area_name = SerializerMethodField()
