@@ -20,6 +20,7 @@ class Review(models.Model):
     like_users = models.ManyToManyField('accounts.User',
                                         related_name='like_reviews',
                                         blank=True)
+    if_crawled = models.BooleanField(default=True)
 
     def __str__(self):
         return 'review_{}'.format(self.id)
