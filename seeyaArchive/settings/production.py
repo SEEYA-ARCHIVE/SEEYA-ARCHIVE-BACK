@@ -1,3 +1,5 @@
+import os
+
 from .base import *
 
 DEBUG = True
@@ -57,10 +59,11 @@ CORS_ALLOW_HEADERS = (
 # S3 설정을 위한 변수
 AWS_ACCESS_KEY_ID = os.getenv("MY_AWS_ACCESS_KEY_ID")
 AWS_SECRET_ACCESS_KEY = os.getenv("MY_AWS_SECRET_ACCESS_KEY")
-AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME")
+AWS_ROOT_STORAGE_BUCKET_NAME = os.getenv("AWS_ROOT_STORAGE_BUCKET_NAME")
+AWS_STORAGE_BUCKET_NAME = 'review-images'
 AWS_REGION = os.getenv("AWS_REGION")
+AWS_S3_CUSTOM_DOMAIN = "https://%s.s3.%s.amazonaws.com/" % (AWS_ROOT_STORAGE_BUCKET_NAME, AWS_REGION)
 
-AWS_S3_CUSTOM_DOMAIN = "%s.s3.%s.amazonaws.com" % (AWS_STORAGE_BUCKET_NAME, AWS_REGION)
 STATIC_URL = "https://%s/" % AWS_S3_CUSTOM_DOMAIN
 STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
