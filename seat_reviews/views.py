@@ -13,12 +13,12 @@ from accounts.models import User
 from django.contrib.sessions.models import Session
 
 
-# Pagination
+## Pagination
 class Pagination(PageNumberPagination):
     page_size = 6
 
 
-# Permission
+## Permission
 class IsAuthorOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
@@ -26,13 +26,15 @@ class IsAuthorOrReadOnly(BasePermission):
         return obj.user == request.user
 
 
-# ViewSet
+## ViewSet
+# s3에 이뷰 이미지 업로드
 class ReviewImageUploadViewSet(ModelViewSet):
     queryset = Review.objects.none()
     serializer_class = SeatReviewImageUploadS3Serializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
 
 
+# 이미지 제외한 리뷰 CRUD
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.all()
     pagination_class = Pagination
@@ -85,6 +87,7 @@ class ReviewViewSet(ModelViewSet):
         return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
 
 
+# 리뷰 댓글 CRUD
 class CommentViewSet(ModelViewSet):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthorOrReadOnly, IsAuthenticatedOrReadOnly]
@@ -106,6 +109,7 @@ class CommentViewSet(ModelViewSet):
         return Response(serializer.data, status=HTTP_201_CREATED, headers=headers)
 
 
+# 리뷰 좋아요 추가 및 삭제
 class ReviewLikeViewSet(RetrieveModelMixin,
                         UpdateModelMixin,
                         DestroyModelMixin,
@@ -122,6 +126,7 @@ class ReviewLikeViewSet(RetrieveModelMixin,
         return self.partial_update(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
+        # 유저 정보는 세션에서 가져와서 사용
         session_key = self.request.session.session_key
         session = Session.objects.get(session_key=session_key)
         uid = session.get_decoded().get('_auth_user_id')
@@ -146,6 +151,7 @@ class ReviewLikeViewSet(RetrieveModelMixin,
         return review
 
 
+# 특정 콘서트장, 특정 층, 특정 좌석 리뷰 호출
 class CompareViewSet(ReadOnlyModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ViewComparisonSerializer

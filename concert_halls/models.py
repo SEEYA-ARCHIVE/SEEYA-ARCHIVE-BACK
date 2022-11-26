@@ -5,8 +5,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 class ConcertHall(models.Model):
     name = models.CharField(max_length=512)
     address = models.CharField(max_length=1024)
-    lat = models.FloatField()
-    lng = models.FloatField()
+    lat = models.FloatField() # 위도
+    lng = models.FloatField() # 경도
 
     def __str__(self):
         return self.name

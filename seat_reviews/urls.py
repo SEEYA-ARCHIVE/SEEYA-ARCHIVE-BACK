@@ -16,9 +16,14 @@ review_router.register('reviews', ReviewViewSet, basename='review')
 
 
 urlpatterns = [
+    # 댓글
     path('reviews/<int:review_id>/', include(comment_router.urls)),
+    # 비교
     path('', include(compare_router.urls)),
+    # s3에 리뷰 이미지 업로드
     path('s3/upload/', include(review_image_router.urls)),
+    # 리뷰 (이미지 제외)
     path('seat_areas/<int:seat_area_id>/', include(review_router.urls)),
+    # 좋아요
     path('reviews/<int:review_id>/likes', ReviewLikeViewSet.as_view()),
 ]

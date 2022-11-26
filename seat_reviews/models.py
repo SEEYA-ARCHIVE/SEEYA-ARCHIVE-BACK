@@ -27,10 +27,10 @@ class Review(models.Model):
 
 class Comment(models.Model):
     user = models.ForeignKey('accounts.User',
-                             related_name='users',
+                             related_name='comment_users',
                              on_delete=models.CASCADE)
     review = models.ForeignKey('seat_reviews.Review',
-                               related_name='comments',
+                               related_name='review_comments',
                                on_delete=models.CASCADE)
     comment = models.CharField(max_length=1024)
     create_at = models.DateTimeField(auto_now_add=True)
